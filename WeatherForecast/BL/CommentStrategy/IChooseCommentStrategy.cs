@@ -6,6 +6,6 @@ namespace BL
 {
     public interface IChooseCommentStrategy
     {
-        void Comment(string City);
+        string Comment();
     }
 }

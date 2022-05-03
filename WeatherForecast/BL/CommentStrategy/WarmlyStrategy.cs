@@ -6,9 +6,9 @@ namespace BL
 {
     public class WarmlyStrategy : IChooseCommentStrategy
     {
-        public void Comment(string City)
+        public string Comment()
         {
-            Console.WriteLine("its warm");
+            return "its Warm";
         }
     }
 }

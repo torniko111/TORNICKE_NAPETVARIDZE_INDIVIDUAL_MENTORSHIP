@@ -17,9 +17,9 @@ namespace BL
             this.ChooseCommentStrategy = Comment;
         }
 
-        public void Comment(string city)
+        public string Comment()
         {
-            ChooseCommentStrategy.Comment(city);
+           return ChooseCommentStrategy.Comment();
         }
 
         public void ChooseComment()

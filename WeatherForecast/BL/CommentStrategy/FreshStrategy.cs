@@ -6,9 +6,9 @@ namespace BL
 {
     public class FreshStrategy : IChooseCommentStrategy
     {
-        public void Comment(string City)
-        { 
-            Console.WriteLine("its fresh");
+        public string Comment()
+        {
+            return "its fresh";
         }
     }
 }
