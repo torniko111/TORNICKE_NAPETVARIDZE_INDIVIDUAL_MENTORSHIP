@@ -14,13 +14,13 @@ namespace TestingForecast
         [TestMethod]
         public void TestMethod1()
         {
-            //Arrange
+
+    
             double C = -10000;
             C = UserService.GetWeatherApi("tbilisi").Result;
-            //Act
+      
 
-
-            //Assert
+            
             Assert.IsTrue(C != -10000);
         }
 

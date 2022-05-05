@@ -15,13 +15,12 @@ namespace BL
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
         public static CommentContext comment;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
+
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _roleRepository = roleRepository;
         }
 
         public async Task<User> AddAsync(User user)
@@ -39,7 +38,7 @@ namespace BL
             throw new System.NotImplementedException();
         }
 
-        public  async static Task<double> GetWeatherApi(string city)
+        public static async Task<double> GetWeatherApi(string city)
         {
             string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
             HttpClient client = new HttpClient();
@@ -47,11 +46,11 @@ namespace BL
 
             var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid={apikey}");
             var stringResult = await response.Content.ReadAsStringAsync();
-            
+
             var obj = JsonConvert.DeserializeObject<dynamic>(stringResult);
 
             var tmpdegreesc = Math.Round(((float)obj.main.temp - 272.15), 2);
-            
+
 
             if (tmpdegreesc > 16)
             {

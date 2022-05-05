@@ -6,6 +6,7 @@ namespace BL
 {
     public class CommentContext
     {
+        public CommentContext comment { get; set; }
         private IChooseCommentStrategy ChooseCommentStrategy;
 
         public CommentContext(IChooseCommentStrategy Comment)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DAL.IRepositories
 {
-    internal interface IWeatherRepository : IRepositoryBase<Weather>
+    public interface IWeatherRepository : IRepositoryBase<Weather>
     {
     }
 }
