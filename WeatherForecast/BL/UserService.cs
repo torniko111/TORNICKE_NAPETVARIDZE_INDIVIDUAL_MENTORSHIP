@@ -38,8 +38,14 @@ namespace BL
             throw new System.NotImplementedException();
         }
 
-        public static async Task<double> GetWeatherApi(string city)
+        public  async Task<double> GetWeatherApi(string city)
         {
+            if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
+            {
+                throw new ArgumentNullException(nameof(city));
+            }
+
+            //needs to be moved to appsettings
             string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("https://api.openweathermap.org");

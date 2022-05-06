@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    internal class Program
+    public class Program
     {
         static async Task Main(string[] args)
         {
@@ -47,9 +47,7 @@ namespace ConsoleApp
                 .Build();
 
             var svc = ActivatorUtilities.CreateInstance<WeatherService>(host.Services);
-            var svc1 = ActivatorUtilities.CreateInstance<UserService>(host.Services);
-
-
+            UserService svc1 = ActivatorUtilities.CreateInstance<UserService>(host.Services);
 
             Console.WriteLine("enter City: ");
             string city = Console.ReadLine();
@@ -59,14 +57,8 @@ namespace ConsoleApp
                 city = Console.ReadLine();
             }
 
-
-            var tmpDegreesC = UserService.GetWeatherApi(city).Result;
-
-
+            var tmpDegreesC = svc1.GetWeatherApi(city).Result;
             Console.WriteLine($"Current temperature is {tmpDegreesC}°C in {city}");
-
-
-
             Console.ReadKey();
         }
 
