@@ -65,6 +65,11 @@ namespace TestingForecast
             return tmpdegreesc;
         }
 
+        public Task<Dictionary<double, string>> GetWeatherForecast(string city, int days)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<User>> ListAsync()
         {
             throw new NotImplementedException();
