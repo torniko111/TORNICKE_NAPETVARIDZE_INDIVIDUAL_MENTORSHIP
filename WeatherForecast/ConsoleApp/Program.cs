@@ -11,6 +11,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -23,7 +24,6 @@ namespace ConsoleApp
             var builder = new ConfigurationBuilder();
             BuildConfig(builder);
 
-
             Log.Logger = new LoggerConfiguration()
                .ReadFrom.Configuration(builder.Build())
                 .Enrich.FromLogContext()
@@ -35,7 +35,6 @@ namespace ConsoleApp
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
-
                     services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WeatherDb;Trusted_Connection=True;MultipleActiveResultSets=true"));
                     services.AddScoped<IWeatherRepository, WeatherRepository>();
                     services.AddScoped<IRoleRepository, RoleRepository>();
@@ -55,65 +54,68 @@ namespace ConsoleApp
                 Console.WriteLine("please choose numbers 1-3: 1. current weather by city, 2.weather forecast by city and number of days 3. exit.");
 
                 int.TryParse(Console.ReadLine(), out nav);
-
+                string city;
                 if (nav == 1)
                 {
                     Console.WriteLine("enter City: ");
-                    string city = Console.ReadLine();
-                    //if (city.Contains(","))
-                    //{
-                    //    string[] namesArray = city.Split(',');
+                    city = Console.ReadLine();
+                    city = Regex.Replace(city, @"\s+", "");
+                    if (city.Contains(","))
+                    {
+                        string[] namesArray = city.Split(',');
 
-                    //    svc1.GetMaxCurrentTemperature(namesArray);
+                        var dateobjects = await svc1.GetMaxCurrentTemperature(namesArray);
 
-                    //    foreach (var item in UserService.arrays)
-                    //    {
-                    //        Console.WriteLine(item);
-                    //    }
+                        Console.WriteLine(dateobjects.MaxTemperature.ToString());
 
-                    //} else
-                    //{
+                        foreach (var item in dateobjects.Temperatures)
+                        {
+                            Console.WriteLine(item.ToString());
+                        }
+                    }
+                    else
+                    {
                         while (string.IsNullOrWhiteSpace(city) || city.Length < 2)
                         {
                             Console.WriteLine("please enter valid city name: ");
                             city = Console.ReadLine();
                         }
 
-                        var tmpDegreesC = svc1.GetWeatherApi(city).Result;
+                        var tmpDegreesC = svc1.AddWeather(city).Result;
                         Console.WriteLine($"Current temperature is {tmpDegreesC}°C in {city}");
                         Console.ReadKey();
-                    //}
-                }
-                if (nav == 2)
-                {
-                    Console.WriteLine("enter City: ");
-                    string city = Console.ReadLine();
-
-                    Console.WriteLine("enter Days of forecast: ");
-                    //needs to be checked
-                    int daysofforecast = int.Parse(Console.ReadLine());
-                    var tmpDegreesC = svc1.GetWeatherForecast(city, daysofforecast).Result;
-                    foreach (KeyValuePair<double, string> author in tmpDegreesC)
-                    {
-                        Console.WriteLine("in {0} is : {1} , Comment: {2}", 
-                            city, author.Key, author.Value);
                     }
-                    Console.ReadKey();
-                }
-                if(nav == 3)
-                {
-                    Console.WriteLine("Exited");
-                    Console.ReadLine();
-                    break;
+                    if (nav == 2)
+                    {
+                        Console.WriteLine("enter City: ");
+                        city = Console.ReadLine();
+
+                        Console.WriteLine("enter Days of forecast: ");
+                        //needs to be checked
+                        int daysofforecast = int.Parse(Console.ReadLine());
+                        var tmpDegreesC = svc1.GetWeatherForecast(city, daysofforecast).Result;
+                        foreach (KeyValuePair<double, string> author in tmpDegreesC)
+                        {
+                            Console.WriteLine("in {0} is : {1} , Comment: {2}",
+                                city, author.Key, author.Value);
+                        }
+                        Console.ReadKey();
+                    }
+                    if (nav == 3)
+                    {
+                        Console.WriteLine("Exited");
+                        Console.ReadLine();
+                        break;
+                    }
                 }
             }
         }
-        static void BuildConfig(IConfigurationBuilder builder)
-        {
-            builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-                .AddEnvironmentVariables();
+            static void BuildConfig(IConfigurationBuilder builder)
+            {
+                builder.SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                    .AddEnvironmentVariables();
+            }
         }
-    }
-}
+    } 

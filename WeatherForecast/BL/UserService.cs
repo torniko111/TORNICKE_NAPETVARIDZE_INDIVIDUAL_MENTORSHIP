@@ -1,5 +1,6 @@
 ﻿
 using BL.Interfaces;
+using BL.Models;
 using DAL.IRepositories;
 using DAL.Models;
 using Newtonsoft.Json;
@@ -16,13 +17,15 @@ namespace BL
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IWeatherRepository weatherRepository;
         public static CommentContext comment;
-        public static double[][] arrays;
 
 
-        public UserService(IUserRepository userRepository)
+
+        public UserService(IUserRepository userRepository, IWeatherRepository weatherRepository)
         {
             _userRepository = userRepository;
+            this.weatherRepository = weatherRepository;
         }
 
         public async Task<User> AddAsync(User user)
@@ -40,23 +43,21 @@ namespace BL
             throw new System.NotImplementedException();
         }
 
-        public async Task<double> GetWeatherApi(string city)
+        public async Task<double> AddWeather(string city)
         {
             if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
             {
                 throw new ArgumentNullException(nameof(city));
             }
 
-            //needs to be moved to appsettings
-            string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.openweathermap.org");
+            WeatherApiModel obj = await GetCurrWeather(city);
 
-            var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid={apikey}");
-            var stringResult = await response.Content.ReadAsStringAsync();
-
-            var obj = JsonConvert.DeserializeObject<dynamic>(stringResult);
-
+            var weather = new Weather()
+            {
+                Lat = obj.coord.lat,
+                Lon = obj.coord.lon,
+            };
+            await weatherRepository.AddAsync(weather);
             var tmpdegreesc = Math.Round(((float)obj.main.temp - 272.15), 2);
 
 
@@ -71,6 +72,20 @@ namespace BL
             Console.WriteLine(comment.Comment());
 
             return tmpdegreesc;
+        }
+
+        private async Task<WeatherApiModel> GetCurrWeather(string city)
+        {
+            //needs to be moved to appsettings
+            string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://api.openweathermap.org");
+
+            var response = await client.GetAsync($"/data/2.5/weather?q={city}&units=metric&appid={apikey}");
+            var stringResult = await response.Content.ReadAsStringAsync();
+
+            var obj = JsonConvert.DeserializeObject<WeatherApiModel>(stringResult);
+            return obj;
         }
 
         public async Task<Dictionary<double, string>> GetWeatherForecast(string city, int days)
@@ -131,27 +146,27 @@ namespace BL
             throw new System.NotImplementedException();
         }
 
-        //public  Task GetMaxCurrentTemperature(string[] cities)
-        //{
-        //    Stopwatch st = new Stopwatch();
-        //    int length = cities.Length;
-        //    for (int i = 0; i < length; i++)
-        //    {
-        //        arrays[i] = new double[2];
-        //    }
 
-        //    for (int i = 0; i < length; i++)
-        //    {
-        //        st.Start();
-        //        var c = Task.Run(() => GetWeatherApi(cities[i]));
-        //        st.Stop();
-                
+        public async Task<MaxTemperatureModel> GetMaxCurrentTemperature(string[] cities)
+        {
+            var tasks = new List<Task>();
+            var result = new MaxTemperatureModel();
+            foreach (var city in cities)
+            {
 
-        //        arrays[i][0] = st.Elapsed.Milliseconds;
-        //        arrays[i][1] = c.Result;
-        //    }
+                var task = Task.Run(async () =>
+                {
 
-        //    return null;
-        //}
+                    Stopwatch st = Stopwatch.StartNew();
+                    var temp = await GetCurrWeather(city);
+                    st.Stop();
+                    result.Temperatures.Add(new MaxTemperatureModel.TemperatureDate() {City= city, Miliseconds = st.Elapsed.Milliseconds, Temperature = temp.main.temp });
+                });
+                tasks.Add(task);
+            }
+
+            await Task.WhenAll(tasks);
+            return result;
+        }
     }
 }

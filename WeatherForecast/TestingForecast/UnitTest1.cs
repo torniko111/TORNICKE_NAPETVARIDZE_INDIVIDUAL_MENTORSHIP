@@ -31,7 +31,7 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
         
-        public async Task<double> GetWeatherApi(string city)
+        public async Task<double> AddWeather(string city)
         {
 
             if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
@@ -79,7 +79,7 @@ namespace TestingForecast
         public void TestMethod1()
         {
             double C = -10000;
-            C = GetWeatherApi("tbilisi").Result;
+            C = AddWeather("tbilisi").Result;
 
             Assert.IsTrue(C != -10000);
         }
@@ -89,7 +89,7 @@ namespace TestingForecast
         {
             //Arrange
 
-            double C = GetWeatherApi("london").Result;
+            double C = AddWeather("london").Result;
             //Act
 
             bool result = false;
@@ -118,7 +118,7 @@ namespace TestingForecast
         {
             //Arrange
 
-            double C = GetWeatherApi("tbilisi").Result;
+            double C = AddWeather("tbilisi").Result;
             //Act
 
             bool result = false;

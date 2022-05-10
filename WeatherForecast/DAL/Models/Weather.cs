@@ -6,8 +6,8 @@ namespace DAL.Models
 {
     public class Weather : BaseEntity
     {
-        public double lon { get; set; }
-        public double lat { get; set; }
+        public double Lon { get; set; }
+        public double Lat { get; set; }
         public string Clouds { get; set; }
         public double TempC { get; set; }
         public double TempCMin { get; set; }   

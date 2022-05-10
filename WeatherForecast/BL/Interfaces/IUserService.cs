@@ -14,7 +14,7 @@ namespace BL.Interfaces
         Task<List<User>> ListAsync();
         Task<User> GetByIdAsync(int id);
         Task UpdateAsync(User user);
-        Task<double> GetWeatherApi(string city);
+        Task<double> AddWeather(string city);
         Task<Dictionary<double, string>> GetWeatherForecast(string city, int days);
         //Task GetMaxCurrentTemperature(string[] cities);
 
