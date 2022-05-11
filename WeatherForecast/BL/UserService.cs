@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BL
@@ -20,6 +21,7 @@ namespace BL
         private readonly IWeatherRepository weatherRepository;
         public static CommentContext comment;
 
+        Stopwatch st = new Stopwatch();
 
 
         public UserService(IUserRepository userRepository, IWeatherRepository weatherRepository)
@@ -45,12 +47,13 @@ namespace BL
 
         public async Task<double> AddWeather(string city)
         {
+            CancellationToken cancellationToken = CancellationToken.None;
             if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
             {
                 throw new ArgumentNullException(nameof(city));
             }
 
-            WeatherApiModel obj = await GetCurrWeather(city);
+            WeatherApiModel obj = await GetCurrWeather(city, cancellationToken);
 
             var weather = new Weather()
             {
@@ -58,7 +61,7 @@ namespace BL
                 Lon = obj.coord.lon,
             };
             await weatherRepository.AddAsync(weather);
-            var tmpdegreesc = Math.Round(((float)obj.main.temp - 272.15), 2);
+            var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
 
 
             if (tmpdegreesc > 16)
@@ -74,17 +77,18 @@ namespace BL
             return tmpdegreesc;
         }
 
-        private async Task<WeatherApiModel> GetCurrWeather(string city)
+        private async Task<WeatherApiModel> GetCurrWeather(string city, CancellationToken cancellation)
         {
             //needs to be moved to appsettings
             string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
-
-            var response = await client.GetAsync($"/data/2.5/weather?q={city}&units=metric&appid={apikey}");
+            st.Start();
+            var response = await client.GetAsync($"/data/2.5/weather?q={city}&units=metric&appid={apikey}", cancellation);
             var stringResult = await response.Content.ReadAsStringAsync();
-
+            st.Stop();
             var obj = JsonConvert.DeserializeObject<WeatherApiModel>(stringResult);
+
             return obj;
         }
 
@@ -150,18 +154,43 @@ namespace BL
         public async Task<MaxTemperatureModel> GetMaxCurrentTemperature(string[] cities)
         {
             var tasks = new List<Task>();
+            int failed = 0;
+            int canceled = 0;
             var result = new MaxTemperatureModel();
+
             foreach (var city in cities)
             {
-
+                var clt = new CancellationTokenSource();
+                clt.CancelAfter(50000);
                 var task = Task.Run(async () =>
                 {
-
-                    Stopwatch st = Stopwatch.StartNew();
-                    var temp = await GetCurrWeather(city);
-                    st.Stop();
-                    result.Temperatures.Add(new MaxTemperatureModel.TemperatureDate() {City= city, Miliseconds = st.Elapsed.Milliseconds, Temperature = temp.main.temp });
+                    if (!clt.Token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            var temp = await GetCurrWeather(city, clt.Token);
+                            if (temp.cod == 404)
+                            {
+                                failed++;
+                                result.Failed = failed;
+                            } else
+                            {
+                                result.Temperatures.Add(new MaxTemperatureModel.TemperatureDate() { City = city, Miliseconds = st.Elapsed.Milliseconds, Temperature = temp.main.temp });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            canceled++;
+                            result.Canceled = canceled;
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("canceled");
+                    }
                 });
+
                 tasks.Add(task);
             }
 

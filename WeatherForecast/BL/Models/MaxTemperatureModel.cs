@@ -9,11 +9,16 @@ namespace BL.Models
     {
         public TemperatureDate MaxTemperature { get { return Temperatures.OrderByDescending(x => x.Temperature).FirstOrDefault(); } }
         public List<TemperatureDate> Temperatures { get; set; } = new List<TemperatureDate>();
+        public int Failed { get; set; }
+        public int Canceled { get; set; }
+
         public class TemperatureDate 
         {
             public string City { get; set; }
             public double Temperature { get; set; }
             public double Miliseconds { get; set; }
+            public string failedorcanceled { get; set; }
+
 
             public override string ToString()
             {

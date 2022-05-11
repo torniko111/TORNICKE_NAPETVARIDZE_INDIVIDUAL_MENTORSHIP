@@ -66,12 +66,11 @@ namespace ConsoleApp
 
                         var dateobjects = await svc1.GetMaxCurrentTemperature(namesArray);
 
-                        Console.WriteLine(dateobjects.MaxTemperature.ToString());
-
                         foreach (var item in dateobjects.Temperatures)
                         {
                             Console.WriteLine(item.ToString());
                         }
+                        Console.WriteLine($"failed {dateobjects.Failed}, Canceled: {dateobjects.Canceled}");
                     }
                     else
                     {
