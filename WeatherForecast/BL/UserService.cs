@@ -60,7 +60,7 @@ namespace BL
                 Lat = obj.coord.lat,
                 Lon = obj.coord.lon,
             };
-            await weatherRepository.AddAsync(weather);
+            //await weatherRepository.AddAsync(weather);
             var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
 
 
@@ -161,7 +161,7 @@ namespace BL
             foreach (var city in cities)
             {
                 var clt = new CancellationTokenSource();
-                clt.CancelAfter(50000);
+                clt.CancelAfter(200);
                 var task = Task.Run(async () =>
                 {
                     if (!clt.Token.IsCancellationRequested)

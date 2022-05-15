@@ -1,4 +1,5 @@
 ﻿using BL;
+using BL.CommandPattern;
 using BL.Interfaces;
 using DAL.data;
 using DAL.IRepositories;
@@ -49,15 +50,19 @@ namespace ConsoleApp
             var svc = ActivatorUtilities.CreateInstance<WeatherService>(host.Services);
             UserService svc1 = ActivatorUtilities.CreateInstance<UserService>(host.Services);
             int nav = 0;
+            Console.WriteLine("please choose numbers 1-3: 1. current weather by city, 2.weather forecast by city and number of days 3. exit.");
+
+            int.TryParse(Console.ReadLine(), out nav);
+
             while (nav != 1 || nav != 2 || nav != 3)
             {
-                Console.WriteLine("please choose numbers 1-3: 1. current weather by city, 2.weather forecast by city and number of days 3. exit.");
+                Invoker invoker = new Invoker();
 
-                int.TryParse(Console.ReadLine(), out nav);
                 string city;
                 if (nav == 1)
                 {
-                    Console.WriteLine("enter City: ");
+                    ICommand command = invoker.GetCommand("1");
+                    command.Execute();
                     city = Console.ReadLine();
                     city = Regex.Replace(city, @"\s+", "");
                     if (city.Contains(","))
@@ -84,37 +89,42 @@ namespace ConsoleApp
                         Console.WriteLine($"Current temperature is {tmpDegreesC}°C in {city}");
                         Console.ReadKey();
                     }
-                    if (nav == 2)
-                    {
-                        Console.WriteLine("enter City: ");
-                        city = Console.ReadLine();
-
-                        Console.WriteLine("enter Days of forecast: ");
-                        //needs to be checked
-                        int daysofforecast = int.Parse(Console.ReadLine());
-                        var tmpDegreesC = svc1.GetWeatherForecast(city, daysofforecast).Result;
-                        foreach (KeyValuePair<double, string> author in tmpDegreesC)
-                        {
-                            Console.WriteLine("in {0} is : {1} , Comment: {2}",
-                                city, author.Key, author.Value);
-                        }
-                        Console.ReadKey();
-                    }
-                    if (nav == 3)
-                    {
-                        Console.WriteLine("Exited");
-                        Console.ReadLine();
-                        break;
-                    }
                 }
+                if (nav == 2)
+                {
+                    ICommand commands = invoker.GetCommand("2");
+                    commands.Execute();
+                    city = Console.ReadLine();
+
+                    Console.WriteLine("enter Days of forecast: ");
+                    //needs to be checked
+                    int daysofforecast = int.Parse(Console.ReadLine());
+                    var tmpDegreesC = svc1.GetWeatherForecast(city, daysofforecast).Result;
+                    foreach (KeyValuePair<double, string> author in tmpDegreesC)
+                    {
+                        Console.WriteLine("in {0} is : {1} , Comment: {2}",
+                            city, author.Key, author.Value);
+                    }
+                    Console.ReadKey();
+                }
+                if (nav == 3)
+                {
+                    ICommand command = invoker.GetCommand("1");
+                    command.Execute();
+                    command = invoker.GetCommand("Stop");
+                    command.Execute();
+                    Console.ReadLine();
+                    break;
+                }
+
             }
         }
-            static void BuildConfig(IConfigurationBuilder builder)
-            {
-                builder.SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-                    .AddEnvironmentVariables();
-            }
+        static void BuildConfig(IConfigurationBuilder builder)
+        {
+            builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .AddEnvironmentVariables();
         }
-    } 
+    }
+}
