@@ -3,9 +3,13 @@ using BL.Interfaces;
 using DAL.data;
 using DAL.IRepositories;
 using DAL.Repositories;
+using Hangfire;
+using Hangfire.AspNetCore;
+using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
@@ -13,6 +17,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+
 
 
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
@@ -23,8 +31,6 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
 
 var app = builder.Build();
 
@@ -38,7 +44,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
 app.Run();

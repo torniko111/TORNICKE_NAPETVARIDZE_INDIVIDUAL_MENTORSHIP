@@ -59,8 +59,11 @@ namespace BL
             {
                 Lat = obj.coord.lat,
                 Lon = obj.coord.lon,
+                CityName = obj.name,
+                TempC = obj.main.temp
+                
             };
-            //await weatherRepository.AddAsync(weather);
+            await weatherRepository.AddAsync(weather);
             var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
 
 
