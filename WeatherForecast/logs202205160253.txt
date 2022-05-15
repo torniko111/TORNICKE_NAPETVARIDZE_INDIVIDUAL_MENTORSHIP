@@ -1,0 +1,55 @@
+[02:53:45 INF] Start installing Hangfire SQL objects...
+[02:53:46 INF] Hangfire SQL objects installed.
+[02:53:46 INF] Starting Hangfire Server using job storage: 'SQL Server: (localdb)\mssqllocaldb@WeatherDb'
+[02:53:46 INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:15.
+[02:53:46 INF] Using the following options for Hangfire Server:
+    Worker count: 20
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+[02:53:46 INF] Now listening on: https://localhost:7102
+[02:53:46 INF] Now listening on: http://localhost:5102
+[02:53:46 INF] Application started. Press Ctrl+C to shut down.
+[02:53:46 INF] Hosting environment: Development
+[02:53:46 INF] Content root path: C:\Users\PC\source\repos\TORNICKE_NAPETVARIDZE_INDIVIDUAL_MENTORSHIP - Copy - Copy\WeatherForecast\Web-api\
+[02:53:46 INF] Server desktop-b5oovr3:10712:72bfa067 successfully announced in 331,1213 ms
+[02:53:46 INF] Server desktop-b5oovr3:10712:72bfa067 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, ExpirationManager, CountersAggregator, SqlServerHeartbeatProcess, Worker, DelayedJobScheduler, RecurringJobScheduler...
+[02:53:46 INF] Server desktop-b5oovr3:10712:72bfa067 all the dispatchers started
+[02:53:47 INF] Request starting HTTP/2 GET https://localhost:7102/swagger/index.html - -
+[02:53:47 INF] Request finished HTTP/2 GET https://localhost:7102/swagger/index.html - - - 200 - text/html;charset=utf-8 191.1572ms
+[02:53:47 INF] Request starting HTTP/2 GET https://localhost:7102/_framework/aspnetcore-browser-refresh.js - -
+[02:53:47 INF] Request finished HTTP/2 GET https://localhost:7102/_framework/aspnetcore-browser-refresh.js - - - 200 11972 application/javascript;+charset=utf-8 9.1381ms
+[02:53:47 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:53:47 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:53:47 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:53:47 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:53:47 INF] Request starting HTTP/2 GET https://localhost:7102/swagger/v1/swagger.json - -
+[02:53:47 INF] Request finished HTTP/2 GET https://localhost:7102/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 69.7292ms
+[02:53:48 INF] Executed DbCommand (45ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+[02:53:48 INF] Executed DbCommand (45ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+[02:53:48 INF] Executed DbCommand (45ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+[02:53:48 INF] Executed DbCommand (45ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();

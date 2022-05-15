@@ -1,0 +1,32 @@
+[02:57:02 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:57:02 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:57:02 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:57:02 INF] Entity Framework Core 3.1.24 initialized 'ApplicationDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+[02:57:02 INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+[02:57:02 INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+[02:57:02 INF] Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+[02:57:02 INF] Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Double), @p6='?' (DbType = Double), @p7='?' (DbType = Int32), @p8='?' (DbType = Int64), @p9='?' (DbType = Int64), @p10='?' (DbType = Double), @p11='?' (DbType = Double), @p12='?' (DbType = Double), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Weathers] ([CityName], [Clouds], [Country], [CreatedOn], [Humidity], [Lat], [Lon], [Pressure], [Sunrise], [Sunset], [TempC], [TempCMax], [TempCMin], [Visibility], [WindSpeed])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+SELECT [Id]
+FROM [Weathers]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();

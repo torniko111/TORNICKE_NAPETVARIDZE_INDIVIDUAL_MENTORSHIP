@@ -1,7 +1,9 @@
 ﻿using BL.Interfaces;
+using DAL.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Web_api.Controllers
 {
@@ -32,7 +34,6 @@ namespace Web_api.Controllers
         {
             return await _userService.GetWeatherForecast(city, days);
         }
-
 
 
         [HttpGet("reccuring")]

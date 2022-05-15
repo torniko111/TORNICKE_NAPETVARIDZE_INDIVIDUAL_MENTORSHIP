@@ -7,9 +7,23 @@ using Hangfire;
 using Hangfire.AspNetCore;
 using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((ctx, lc) => lc
+    .WriteTo.Console()
+    .WriteTo.File(@"C:\Users\PC\source\repos\TORNICKE_NAPETVARIDZE_INDIVIDUAL_MENTORSHIP - Copy - Copy\WeatherForecast\logs.txt", rollingInterval: RollingInterval.Minute, outputTemplate:
+        "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
+    
+
+//Log.Logger = new LoggerConfiguration()
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console(outputTemplate:
+//        "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+//    .WriteTo.File(@"C:\Users\PC\source\repos\TORNICKE_NAPETVARIDZE_INDIVIDUAL_MENTORSHIP - Copy - Copy\WeatherForecast\logs.txt", rollingInterval: RollingInterval.Minute, outputTemplate:
+//        "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+//    .CreateLogger();
 
 // Add services to the container.
 
@@ -17,6 +31,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();

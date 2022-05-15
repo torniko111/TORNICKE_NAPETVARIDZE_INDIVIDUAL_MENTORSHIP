@@ -200,5 +200,10 @@ namespace BL
             await Task.WhenAll(tasks);
             return result;
         }
+
+        public async Task<List<Weather>> getreport(DateTime from, DateTime to)
+        {
+            return await weatherRepository.ListAsync();
+        }
     }
 }

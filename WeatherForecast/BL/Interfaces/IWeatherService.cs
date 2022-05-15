@@ -10,8 +10,9 @@ namespace BL.Interfaces
     {
         Task<Weather> AddAsync(Weather weather);
         Task DeleteAsync(Weather weather);
-        Task<List<User>> ListAsync();
-        Task<User> GetByIdAsync(int id);
+        Task<List<Weather>> ListAsync();
+        Task<Weather> GetByIdAsync(int id);
         Task UpdateAsync(Weather weather);
+        Task<List<Weather>> GetReportByDate(DateTime from, DateTime to);
     }
 }
