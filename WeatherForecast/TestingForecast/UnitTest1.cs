@@ -166,5 +166,10 @@ namespace TestingForecast
         {
             throw new NotImplementedException();
         }
+
+        public Task GetCurrentWeatherByCitiesSameTime(string[] city)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
