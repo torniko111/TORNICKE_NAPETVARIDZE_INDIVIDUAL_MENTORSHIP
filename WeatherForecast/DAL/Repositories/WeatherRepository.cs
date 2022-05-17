@@ -17,9 +17,18 @@ namespace DAL.Repositories
         {
         }
 
+        public async Task<List<Weather>> AddRange(List<Weather> weathers)
+        {
+            await _dbContext.Weathers.AddRangeAsync(weathers);
+            _dbContext.SaveChanges();
+            return weathers;
+        }
+
         public async Task<List<Weather>> GetByDateRange(DateTime from, DateTime to)
         {
             return await _dbContext.Weathers.Where(x => x.CreatedOn >= from && x.CreatedOn <= to).ToListAsync();
         }
+
+
     }
 }

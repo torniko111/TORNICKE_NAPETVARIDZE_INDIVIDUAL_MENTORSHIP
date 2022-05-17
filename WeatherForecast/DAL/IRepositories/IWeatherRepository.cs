@@ -9,5 +9,6 @@ namespace DAL.IRepositories
     public interface IWeatherRepository : IRepositoryBase<Weather>
     {
         Task<List<Weather>> GetByDateRange(DateTime from, DateTime to);
+        Task<List<Weather>> AddRange(List<Weather> weathers);
     }
 }

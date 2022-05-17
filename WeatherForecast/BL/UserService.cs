@@ -61,7 +61,7 @@ namespace BL
                 Lon = obj.coord.lon,
                 CityName = obj.name,
                 TempC = obj.main.temp
-                
+
             };
             await weatherRepository.AddAsync(weather);
             var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
@@ -176,7 +176,8 @@ namespace BL
                             {
                                 failed++;
                                 result.Failed = failed;
-                            } else
+                            }
+                            else
                             {
                                 result.Temperatures.Add(new MaxTemperatureModel.TemperatureDate() { City = city, Miliseconds = st.Elapsed.Milliseconds, Temperature = temp.main.temp });
                             }
@@ -204,6 +205,54 @@ namespace BL
         public async Task<List<Weather>> getreport(DateTime from, DateTime to)
         {
             return await weatherRepository.GetByDateRange(from, to);
+        }
+
+        public async Task GetCurrentWeatherByCity(string city)
+        {
+            CancellationToken cancellationToken = CancellationToken.None;
+            if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
+            {
+                throw new ArgumentNullException(nameof(city));
+            }
+
+            WeatherApiModel obj = await GetCurrWeather(city, cancellationToken);
+
+            var weather = new Weather()
+            {
+                Lat = obj.coord.lat,
+                Lon = obj.coord.lon,
+                CityName = obj.name,
+                TempC = obj.main.temp
+
+            };
+            await weatherRepository.AddAsync(weather);
+            var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
+
+        }
+
+        public async Task GetCurrentWeatherByCitiesSameTime(string[] city)
+        {
+            CancellationToken cancellationToken = CancellationToken.None;
+            List<Weather> weathers = new List<Weather>();
+
+            for (int i = 0; i < city.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(city[i]) || city.Length == 1)
+                {
+                    throw new ArgumentNullException(nameof(city));
+                }
+
+                WeatherApiModel obj = await GetCurrWeather(city[i], cancellationToken);
+
+                weathers.Add(new Weather()
+                {
+                    Lat = obj.coord.lat,
+                    Lon = obj.coord.lon,
+                    CityName = obj.name,
+                    TempC = obj.main.temp
+                });
+            }
+            await weatherRepository.AddRange(weathers);
         }
     }
 }
