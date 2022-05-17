@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DAL.IRepositories
 {
     public interface IWeatherRepository : IRepositoryBase<Weather>
     {
+        Task<List<Weather>> GetByDateRange(DateTime from, DateTime to);
     }
 }

@@ -203,7 +203,7 @@ namespace BL
 
         public async Task<List<Weather>> getreport(DateTime from, DateTime to)
         {
-            return await weatherRepository.ListAsync();
+            return await weatherRepository.GetByDateRange(from, to);
         }
     }
 }

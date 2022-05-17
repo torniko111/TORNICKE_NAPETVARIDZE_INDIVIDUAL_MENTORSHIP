@@ -13,6 +13,6 @@ namespace BL.Interfaces
         Task<List<Weather>> ListAsync();
         Task<Weather> GetByIdAsync(int id);
         Task UpdateAsync(Weather weather);
-        Task<List<Weather>> GetReportByDate(DateTime from, DateTime to);
+        Task<List<Weather>> GetByDateRange(DateTime from, DateTime to);
     }
 }

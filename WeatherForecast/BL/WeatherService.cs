@@ -28,15 +28,17 @@ namespace BL
             throw new NotImplementedException();
         }
 
+        public Task<List<Weather>> GetByDateRange(DateTime from, DateTime to)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Weather> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Weather>> GetReportByDate(DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public Task<List<Weather>> ListAsync()
         {

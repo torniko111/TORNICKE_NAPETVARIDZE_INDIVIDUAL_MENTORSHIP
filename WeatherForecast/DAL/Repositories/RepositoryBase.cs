@@ -17,7 +17,7 @@ namespace DAl.Repositories
         /// <summary>
         /// 
         /// </summary>
-        private readonly ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext _dbContext;
         internal DbSet<T> dbSet;
 
         /// <summary>

@@ -36,23 +36,31 @@ namespace Web_api.Controllers
         }
 
 
-        [HttpGet("reccuring")]
-        public async Task reccuring(string cities)
+        [HttpGet("reports")]
+        public async Task<List<Weather>> getreports(DateTime from, DateTime to)
         {
-            if (cities.Contains(","))
-            {
-                string[] citys = cities.Split(',');
-
-                for (int i = 0; i < citys.Length; i++)
-                {
-                    recurringJobManager.AddOrUpdate($"addedrecc for city {citys[i]}", () => getCurrTemp(citys[i]), Cron.Minutely());
-                }
-            }
-            else
-            {
-                recurringJobManager.AddOrUpdate($"addedrecc for city {cities}", () => getCurrTemp(cities), Cron.Minutely());
-            }
-
+            return await _userService.getreport(from, to);
         }
+
+
+
+        //[HttpGet("reccuring")]
+        //public async Task reccuring(string cities)
+        //{
+        //    if (cities.Contains(","))
+        //    {
+        //        string[] citys = cities.Split(',');
+
+        //        for (int i = 0; i < citys.Length; i++)
+        //        {
+        //            recurringJobManager.AddOrUpdate($"addedrecc for city {citys[i]}", () => getCurrTemp(citys[i]), Cron.Minutely());
+        //        }
+        //    }
+        //    else
+        //    {
+        //         recurringJobManager.AddOrUpdate($"addedrecc for city {cities}", () => getCurrTemp(cities), Cron.Minutely());
+        //    }
+
+        //}
     }
 }
