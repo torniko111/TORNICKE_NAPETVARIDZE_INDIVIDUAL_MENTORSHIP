@@ -15,9 +15,9 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
-
 string city = builder.Configuration.GetValue<string>("WeatherSettings:Cities");
 string Cron = builder.Configuration.GetValue<string>("WeatherSettings:Cron");
+
 
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
@@ -35,7 +35,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();
 
-builder.Services.AddSingleton<IConfigurationReader, ConfigurationReader>();
+builder.Services.AddScoped<IConfigurationReader, ConfigurationReader>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -59,6 +59,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
+
+app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => RecurringJob.RemoveIfExists("tbilisi"));
 
 if (city.Contains(","))
 {

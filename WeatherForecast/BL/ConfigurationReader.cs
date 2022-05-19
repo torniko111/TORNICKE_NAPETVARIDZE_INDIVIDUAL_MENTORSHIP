@@ -1,5 +1,6 @@
 ﻿using BL.Interfaces;
 using DAL.Models;
+using Hangfire;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
@@ -18,6 +19,7 @@ namespace BL
             optionsMonitor.OnChange(config =>
             {
                 this.dashboardHeaderConfig = config;
+                RecurringJob.RemoveIfExists("IUserService.GetCurrentWeatherByCity");
             });
         }
 
