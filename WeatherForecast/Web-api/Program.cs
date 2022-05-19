@@ -2,21 +2,26 @@ using BL;
 using BL.Interfaces;
 using DAL.data;
 using DAL.IRepositories;
+using DAL.Models;
 using DAL.Repositories;
 using Hangfire;
 using Hangfire.AspNetCore;
 using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-string city = builder.Configuration.GetValue<string>("Cities");
-string Cron = builder.Configuration.GetValue<string>("Cron");
+
+builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
+
+string city = builder.Configuration.GetValue<string>("WeatherSettings:Cities");
+string Cron = builder.Configuration.GetValue<string>("WeatherSettings:Cron");
 
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
-    .WriteTo.File(builder.Configuration.GetValue<string>("LogPath"), rollingInterval: RollingInterval.Minute, outputTemplate:
+    .WriteTo.File(builder.Configuration.GetValue<string>("WeatherSettings:LogPath"), rollingInterval: RollingInterval.Minute, outputTemplate:
         "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
 
 // Add services to the container.
@@ -30,6 +35,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();
 
+builder.Services.AddSingleton<IConfigurationReader, ConfigurationReader>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -68,7 +74,7 @@ if (city.Contains(","))
     else
     {
         //one db call
-        RecurringJob.AddOrUpdate<IUserService>(x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
+        RecurringJob.AddOrUpdate<IUserService>("tbilisi", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
     }
 }
 else
