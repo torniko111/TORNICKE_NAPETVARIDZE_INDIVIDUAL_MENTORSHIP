@@ -7,6 +7,7 @@ using DAL.Repositories;
 using Hangfire;
 using Hangfire.AspNetCore;
 using Hangfire.SqlServer;
+using Hangfire.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -60,7 +61,14 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => RecurringJob.RemoveIfExists("tbilisi"));
+using (var connection = JobStorage.Current.GetConnection())
+{
+    foreach (var recurringJob in connection.GetRecurringJobs())
+    {
+        app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => RecurringJob.RemoveIfExists(recurringJob.Id));
+    }
+}
+
 
 if (city.Contains(","))
 {
@@ -76,7 +84,7 @@ if (city.Contains(","))
     else
     {
         //one db call
-        RecurringJob.AddOrUpdate<IUserService>("tbilisi", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
+        RecurringJob.AddOrUpdate<IUserService>("mcxeta", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
     }
 }
 else
