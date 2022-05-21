@@ -10,7 +10,7 @@ namespace DAL.Models
         public double Lat { get; set; }
         public string Clouds { get; set; }
         public double TempC { get; set; }
-        public double TempCMin { get; set; }   
+        public double TempCMin { get; set; }
         public double TempCMax { get; set; }
         public int Pressure { get; set; }
         public int Humidity { get; set; }
@@ -21,6 +21,5 @@ namespace DAL.Models
         public long Sunset { get; set; }
         //public TimeZone TimeZone { get; set; }
         public string CityName { get; set; }
-
     }
 }

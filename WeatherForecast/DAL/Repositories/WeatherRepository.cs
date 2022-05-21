@@ -28,7 +28,5 @@ namespace DAL.Repositories
         {
             return await _dbContext.Weathers.Where(x => x.CreatedOn >= from && x.CreatedOn <= to).ToListAsync();
         }
-
-
     }
 }

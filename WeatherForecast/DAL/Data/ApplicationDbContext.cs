@@ -7,14 +7,16 @@ namespace DAL.data
     public class ApplicationDbContext : DbContext
     {
        
-        public DbSet<Weather> Weathers { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
+
+        protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server = (localdb)\\mssqllocaldb; Database = WeatherDb; Trusted_Connection = True; MultipleActiveResultSets = true");
+            base.OnConfiguring (optionsBuilder);
+        }
+        public DbSet<Weather> Weathers { get; set; }
     }
 }

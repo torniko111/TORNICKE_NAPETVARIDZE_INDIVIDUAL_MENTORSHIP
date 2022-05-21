@@ -11,10 +11,10 @@ namespace Web_api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IWeatherService _userService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, ILogger<UserController> logger, IRecurringJobManager recurringJobManager)
+        public UserController(IWeatherService userService, ILogger<UserController> logger, IRecurringJobManager recurringJobManager)
         {
             _userService = userService;
             _logger = logger;

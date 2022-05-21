@@ -1,7 +1,7 @@
-﻿using DAL.Models;
+﻿
+using DAL.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.IRepositories
@@ -12,3 +12,4 @@ namespace DAL.IRepositories
         Task<List<Weather>> AddRange(List<Weather> weathers);
     }
 }
+ 

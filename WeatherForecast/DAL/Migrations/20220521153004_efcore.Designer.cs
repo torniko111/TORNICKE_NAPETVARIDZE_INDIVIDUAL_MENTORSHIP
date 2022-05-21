@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220504105112_firstmigrate")]
-    partial class firstmigrate
+    [Migration("20220521153004_efcore")]
+    partial class efcore
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,47 +20,6 @@ namespace DAL.Migrations
                 .HasAnnotation("ProductVersion", "3.1.24")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("DAL.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RoleName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("DAL.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Users");
-                });
 
             modelBuilder.Entity("DAL.Models.Weather", b =>
                 {
@@ -83,6 +42,12 @@ namespace DAL.Migrations
 
                     b.Property<int>("Humidity")
                         .HasColumnType("int");
+
+                    b.Property<double>("Lat")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Lon")
+                        .HasColumnType("float");
 
                     b.Property<int>("Pressure")
                         .HasColumnType("int");
@@ -108,24 +73,9 @@ namespace DAL.Migrations
                     b.Property<int>("WindSpeed")
                         .HasColumnType("int");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("float");
-
-                    b.Property<double>("lon")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
 
                     b.ToTable("Weathers");
-                });
-
-            modelBuilder.Entity("DAL.Models.User", b =>
-                {
-                    b.HasOne("DAL.Models.Role", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

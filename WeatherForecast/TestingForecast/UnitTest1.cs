@@ -13,20 +13,20 @@ using System.Collections.Generic;
 namespace TestingForecast
 {
     [TestClass]
-    public class UnitTest1 : IUserService
+    public class UnitTest1 : IWeatherService
     {
 
-        public Task<User> AddAsync(User user)
+        public Task<Weather> AddAsync(Weather user)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(User user)
+        public Task DeleteAsync(Weather user)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetByIdAsync(int id)
+        public Task<Weather> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -54,13 +54,13 @@ namespace TestingForecast
 
             if (tmpdegreesc > 16)
             {
-                UserService.comment = new CommentContext(new FreshStrategy());
+                WeatherService.comment = new CommentContext(new FreshStrategy());
             }
             else
             {
-                UserService.comment = new CommentContext(new WarmlyStrategy());
+                WeatherService.comment = new CommentContext(new WarmlyStrategy());
             }
-            Console.WriteLine(UserService.comment.Comment());
+            Console.WriteLine(WeatherService.comment.Comment());
 
             return tmpdegreesc;
         }
@@ -70,7 +70,7 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
 
-        public Task<List<User>> ListAsync()
+        public Task<List<Weather>> ListAsync()
         {
             throw new NotImplementedException();
         }
@@ -96,14 +96,14 @@ namespace TestingForecast
 
             if (C > 16)
             {
-                if (UserService.comment.Comment() == "its fresh")
+                if (WeatherService.comment.Comment() == "its fresh")
                 {
                     result = true;
                 }
             }
             else if (C <= 16)
             {
-                if (UserService.comment.Comment() == "its Warm")
+                if (WeatherService.comment.Comment() == "its Warm")
                 {
                     result = true;
                 }
@@ -125,14 +125,14 @@ namespace TestingForecast
 
             if (C > 16)
             {
-                if (UserService.comment.Comment() == "its fresh")
+                if (WeatherService.comment.Comment() == "its fresh")
                 {
                     result = true;
                 }
             }
             else if (C <= 16)
             {
-                if (UserService.comment.Comment() == "its Warm")
+                if (WeatherService.comment.Comment() == "its Warm")
                 {
                     result = true;
                 }
@@ -142,7 +142,7 @@ namespace TestingForecast
             Assert.IsTrue(result);
         }
 
-        public Task UpdateAsync(User user)
+        public Task UpdateAsync(Weather user)
         {
             throw new NotImplementedException();
         }

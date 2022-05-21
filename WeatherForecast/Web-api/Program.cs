@@ -15,7 +15,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
+builder.Services.Configure<Settings>(builder.Configuration.GetSection("WeatherSettings"));
 string city = builder.Configuration.GetValue<string>("WeatherSettings:Cities");
 string Cron = builder.Configuration.GetValue<string>("WeatherSettings:Cron");
 
@@ -24,6 +24,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .WriteTo.File(builder.Configuration.GetValue<string>("WeatherSettings:LogPath"), rollingInterval: RollingInterval.Minute, outputTemplate:
         "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 
@@ -38,13 +39,8 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddScoped<IConfigurationReader, ConfigurationReader>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IRoleService, RoleService>();
-builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -65,7 +61,7 @@ using (var connection = JobStorage.Current.GetConnection())
 {
     foreach (var recurringJob in connection.GetRecurringJobs())
     {
-        app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => RecurringJob.RemoveIfExists(recurringJob.Id));
+        app.Services.GetRequiredService<IOptionsMonitor<Settings>>().OnChange(config => RecurringJob.RemoveIfExists(recurringJob.Id));
     }
 }
 
@@ -78,13 +74,13 @@ if (city.Contains(","))
         string[] Crons = Cron.Split(',');
         for (int i = 0; i < cities.Length; i++)
         {
-            RecurringJob.AddOrUpdate<IUserService>(x => x.GetCurrentWeatherByCity(cities[i]), Crons[i]);
+            RecurringJob.AddOrUpdate<IWeatherService>(x => x.GetCurrentWeatherByCity(cities[i]), Crons[i]);
         }
     }
     else
     {
         //one db call
-        RecurringJob.AddOrUpdate<IUserService>("mcxeta", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
+        RecurringJob.AddOrUpdate<IWeatherService>("mcxeta", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
     }
 }
 else
@@ -92,11 +88,11 @@ else
     if (Cron.Contains(","))
     {
         string[] Crons = Cron.Split(',');
-        RecurringJob.AddOrUpdate<IUserService>(x => x.GetCurrentWeatherByCity(city), Crons[0]);
+        RecurringJob.AddOrUpdate<IWeatherService>(x => x.GetCurrentWeatherByCity(city), Crons[0]);
     }
     else
     {
-        RecurringJob.AddOrUpdate<IUserService>(x => x.GetCurrentWeatherByCity(city), Cron);
+        RecurringJob.AddOrUpdate<IWeatherService>(x => x.GetCurrentWeatherByCity(city), Cron);
     }
 }
 

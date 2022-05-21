@@ -11,9 +11,9 @@ namespace BL
 {
     public class ConfigurationReader : IConfigurationReader
     {
-        private WeatherSettings dashboardHeaderConfig;
+        private Settings dashboardHeaderConfig;
 
-        public ConfigurationReader(IOptionsMonitor<WeatherSettings> optionsMonitor)
+        public ConfigurationReader(IOptionsMonitor<Settings> optionsMonitor)
         {
             this.dashboardHeaderConfig = optionsMonitor.CurrentValue;
             optionsMonitor.OnChange(config =>
