@@ -19,7 +19,6 @@ namespace BL
             optionsMonitor.OnChange(config =>
             {
                 this.dashboardHeaderConfig = config;
-                RecurringJob.RemoveIfExists("IUserService.GetCurrentWeatherByCity");
             });
         }
 
