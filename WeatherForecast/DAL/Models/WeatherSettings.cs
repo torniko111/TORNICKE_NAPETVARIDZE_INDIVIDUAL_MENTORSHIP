@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAL.Models
 {
-    public class Settings
+    public class WeatherSettings
     {
         public string Cities { get; set; }
         public string Cron { get; set; }

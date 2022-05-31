@@ -15,16 +15,13 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<Settings>(builder.Configuration.GetSection("WeatherSettings"));
-string city = builder.Configuration.GetValue<string>("WeatherSettings:Cities");
-string Cron = builder.Configuration.GetValue<string>("WeatherSettings:Cron");
+builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
 
 
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .WriteTo.File(builder.Configuration.GetValue<string>("WeatherSettings:LogPath"), rollingInterval: RollingInterval.Minute, outputTemplate:
         "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 
@@ -41,6 +38,7 @@ builder.Services.AddScoped<IConfigurationReader, ConfigurationReader>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
 
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -57,44 +55,50 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-using (var connection = JobStorage.Current.GetConnection())
+app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => deleter());
+app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => CallWeather(builder.Configuration.GetValue<string>("WeatherSettings:Cities"), builder.Configuration.GetValue<string>("WeatherSettings:Cron")));
+static void CallWeather(string city, string Cron)
 {
-    foreach (var recurringJob in connection.GetRecurringJobs())
+    if (city.Contains(","))
     {
-        app.Services.GetRequiredService<IOptionsMonitor<Settings>>().OnChange(config => RecurringJob.RemoveIfExists(recurringJob.Id));
-    }
-}
-
-
-if (city.Contains(","))
-{
-    string[] cities = city.Split(',');
-    if (Cron.Contains(","))
-    {
-        string[] Crons = Cron.Split(',');
-        for (int i = 0; i < cities.Length; i++)
+        string[] cities = city.Split(',');
+        if (Cron.Contains(","))
         {
-            RecurringJob.AddOrUpdate<IWeatherService>(x => x.GetCurrentWeatherByCity(cities[i]), Crons[i]);
+            string[] Crons = Cron.Split(',');
+            for (int i = 0; i < cities.Length; i++)
+            {
+                RecurringJob.AddOrUpdate<WeatherService>($"{cities[i]}", x => x.GetCurrentWeatherByCity(cities[i]), Crons[i]);
+            }
+        }
+        else
+        {
+            //one db call
+            RecurringJob.AddOrUpdate<WeatherService>($"{cities[0]}", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
         }
     }
     else
     {
-        //one db call
-        RecurringJob.AddOrUpdate<IWeatherService>("mcxeta", x => x.GetCurrentWeatherByCitiesSameTime(cities), Cron);
+        if (Cron.Contains(","))
+        {
+            string[] Crons = Cron.Split(',');
+            RecurringJob.AddOrUpdate<WeatherService>($"{city}", x => x.GetCurrentWeatherByCity(city), Crons[0]);
+        }
+        else
+        {
+            RecurringJob.AddOrUpdate<WeatherService>($"{city}", x => x.GetCurrentWeatherByCity(city), Cron);
+        }
     }
 }
-else
+
+static void deleter()
 {
-    if (Cron.Contains(","))
+    using (var connection = JobStorage.Current.GetConnection())
     {
-        string[] Crons = Cron.Split(',');
-        RecurringJob.AddOrUpdate<IWeatherService>(x => x.GetCurrentWeatherByCity(city), Crons[0]);
-    }
-    else
-    {
-        RecurringJob.AddOrUpdate<IWeatherService>(x => x.GetCurrentWeatherByCity(city), Cron);
+        foreach (var recurringJob in connection.GetRecurringJobs())
+        {
+            RecurringJob.RemoveIfExists(recurringJob.Id);
+        }
     }
 }
-
-
 app.Run();
+

@@ -11,15 +11,14 @@ namespace BL
 {
     public class ConfigurationReader : IConfigurationReader
     {
-        private Settings dashboardHeaderConfig;
+        private WeatherSettings dashboardHeaderConfig;
 
-        public ConfigurationReader(IOptionsMonitor<Settings> optionsMonitor)
+        public ConfigurationReader(IOptionsMonitor<WeatherSettings> optionsMonitor)
         {
             this.dashboardHeaderConfig = optionsMonitor.CurrentValue;
             optionsMonitor.OnChange(config =>
             {
                 this.dashboardHeaderConfig = config;
-                RecurringJob.RemoveIfExists("IUserService.GetCurrentWeatherByCity");
             });
         }
 
