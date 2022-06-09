@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220521153004_efcore")]
-    partial class efcore
+    [Migration("20220609112310_ret")]
+    partial class ret
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

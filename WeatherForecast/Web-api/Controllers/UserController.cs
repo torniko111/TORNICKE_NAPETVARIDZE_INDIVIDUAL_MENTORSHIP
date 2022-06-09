@@ -1,6 +1,7 @@
 ﻿using BL.Interfaces;
 using DAL.Models;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ namespace Web_api.Controllers
             _logger = logger;
         }
 
-
+        [Authorize(Roles ="member")]
         [HttpGet("getCurrentWeatherByCity")]
         public async Task<double> getCurrTemp(string city)
         {

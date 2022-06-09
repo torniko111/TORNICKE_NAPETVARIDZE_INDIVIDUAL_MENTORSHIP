@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class efcore : Migration
+    public partial class ret : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
