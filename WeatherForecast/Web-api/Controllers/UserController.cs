@@ -35,9 +35,9 @@ namespace Web_api.Controllers
         }
 
         [HttpGet("reportsByDate")]
-        public async Task<List<Weather>> getreports(DateTime from, DateTime to)
+        public async Task<List<Weather>> getreports(DateTime from, DateTime to, string city)
         {
-            return await _userService.getreport(from, to);
+            return await _userService.getreport(from, to, city);
         }
     }
 }

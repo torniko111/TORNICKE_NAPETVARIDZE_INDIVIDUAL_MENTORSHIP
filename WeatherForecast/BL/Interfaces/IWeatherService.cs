@@ -17,7 +17,7 @@ namespace BL.Interfaces
         Task<double> AddWeather(string city);
         Task GetCurrentWeatherByCity(string city);
         Task GetCurrentWeatherByCitiesSameTime(string[] city);
-        Task<List<Weather>> getreport(DateTime from, DateTime to);
+        Task<List<Weather>> getreport(DateTime from, DateTime to, string city);
         Task<Dictionary<double, string>> GetWeatherForecast(string city, int days);
     }
 }

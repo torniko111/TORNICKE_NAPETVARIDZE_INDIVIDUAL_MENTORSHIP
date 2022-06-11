@@ -28,18 +28,18 @@ namespace BL
             this.weatherRepository = weatherRepository;
         }
 
-        public async Task<Weather> AddAsync(Weather user)
+        public void AddAsync(Weather user)
         {
-            return await weatherRepository.AddAsync(user);
+             weatherRepository.Add(user);
         }
 
         public Task DeleteAsync(Weather user)
         {
             throw new System.NotImplementedException();
         }
-        public async Task<List<Weather>> getreport(DateTime from, DateTime to)
+        public async Task<List<Weather>> getreport(DateTime from, DateTime to, string city)
         {
-            return await weatherRepository.GetByDateRange(from, to);
+            return await weatherRepository.GetByDateRange(from, to, city);
         }
         public Task<Weather> GetByIdAsync(int id)
         {
@@ -64,7 +64,7 @@ namespace BL
                 TempC = obj.main.temp
 
             };
-            await weatherRepository.AddAsync(weather);
+            weatherRepository.Add(weather);
             var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
 
 
@@ -221,7 +221,7 @@ namespace BL
                 TempC = obj.main.temp
 
             };
-            await weatherRepository.AddAsync(weather);
+            weatherRepository.Add(weather);
             var tmpdegreesc = Math.Round(((float)obj.main.temp), 2);
 
         }
@@ -249,6 +249,11 @@ namespace BL
                 });
             }
             await weatherRepository.AddRange(weathers);
+        }
+
+        Task<Weather> IWeatherService.AddAsync(Weather user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

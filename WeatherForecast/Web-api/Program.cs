@@ -3,7 +3,7 @@ using BL.Interfaces;
 using DAL.data;
 using DAL.IRepositories;
 using DAL.Models;
-using DAL.Repositories;
+using DAL.TypeRepository;
 using Hangfire;
 using Hangfire.AspNetCore;
 using Hangfire.SqlServer;

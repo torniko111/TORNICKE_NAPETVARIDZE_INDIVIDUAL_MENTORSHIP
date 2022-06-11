@@ -171,5 +171,10 @@ namespace TestingForecast
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Weather>> getreport(DateTime from, DateTime to, string city)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
