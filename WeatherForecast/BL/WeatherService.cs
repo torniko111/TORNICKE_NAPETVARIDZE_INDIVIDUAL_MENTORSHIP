@@ -28,12 +28,12 @@ namespace BL
             this.weatherRepository = weatherRepository;
         }
 
-        public void AddAsync(Weather user)
+        public void AddAsync(Weather weather)
         {
-             weatherRepository.Add(user);
+             weatherRepository.Add(weather);
         }
 
-        public Task DeleteAsync(Weather user)
+        public Task DeleteAsync(Weather weather)
         {
             throw new System.NotImplementedException();
         }
@@ -149,7 +149,7 @@ namespace BL
             throw new System.NotImplementedException();
         }
 
-        public Task UpdateAsync(Weather user)
+        public Task UpdateAsync(Weather weather)
         {
             throw new System.NotImplementedException();
         }
@@ -251,7 +251,7 @@ namespace BL
             await weatherRepository.AddRange(weathers);
         }
 
-        Task<Weather> IWeatherService.AddAsync(Weather user)
+        Task<Weather> IWeatherService.AddAsync(Weather weather)
         {
             throw new NotImplementedException();
         }
