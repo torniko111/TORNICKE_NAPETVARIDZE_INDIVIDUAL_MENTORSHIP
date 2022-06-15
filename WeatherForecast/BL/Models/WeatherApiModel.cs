@@ -1,69 +1,128 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace BL
 {
-
     public class WeatherApiModel
     {
-        public Coord coord { get; set; }
-        public Weather[] weather { get; set; }
-        public string _base { get; set; }
-        public Main main { get; set; }
-        public int visibility { get; set; }
-        public Wind wind { get; set; }
-        public Clouds clouds { get; set; }
-        public int dt { get; set; }
-        public Sys sys { get; set; }
-        public int timezone { get; set; }
-        public int id { get; set; }
-        public string name { get; set; }
-        public int cod { get; set; }
+        [JsonProperty("Coord")]
+        public CoordModel CityCoordinates { get; set; }
+
+        [JsonProperty("Weather")]
+        public WeatherModel[] WeatherType { get; set; }
+
+        [JsonProperty("_base")]
+        public string InformationSource { get; set; }
+
+        [JsonProperty("main")]
+        public MainModel Celsius { get; set; }
+
+        [JsonProperty("mvisibility")]
+        public int Visibility { get; set; }
+
+        [JsonProperty("wind")]
+        public WindModel Wind { get; set; }
+
+        [JsonProperty("clouds")]
+        public CloudsModel Clouds { get; set; }
+
+        [JsonProperty("dt")]
+        public int CurrentTime { get; set; }
+
+        [JsonProperty("sys")]
+        public SysModel Country { get; set; }
+
+        [JsonProperty("timezone")]
+        public int Timezone { get; set; }
+
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("cod")]
+        public int ResponseStatusCode { get; set; }
 
 
-        public class Coord
+        public class CoordModel
         {
-            public float lon { get; set; }
-            public float lat { get; set; }
+            [JsonProperty("lon")]
+            public float Lon { get; set; }
+
+            [JsonProperty("lat")]
+            public float Lat { get; set; }
         }
 
-        public class Main
+        public class MainModel
         {
-            public float temp { get; set; }
-            public float feels_like { get; set; }
-            public float temp_min { get; set; }
-            public float temp_max { get; set; }
-            public int pressure { get; set; }
-            public int humidity { get; set; }
+            [JsonProperty("temp")]
+            public float Temp { get; set; }
+
+            [JsonProperty("feels_like")]
+            public float FeelsLike { get; set; }
+
+            [JsonProperty("temp_min")]
+            public float TempMin { get; set; }
+
+            [JsonProperty("temp_max")]
+            public float TempMax { get; set; }
+
+            [JsonProperty("pressure")]
+            public int Pressure { get; set; }
+
+            [JsonProperty("humidity")]
+            public int Humidity { get; set; }
         }
 
-        public class Wind
+        public class WindModel
         {
-            public float speed { get; set; }
-            public int deg { get; set; }
+            [JsonProperty("speed")]
+            public float Speed { get; set; }
+
+            [JsonProperty("deg")]
+            public int Deg { get; set; }
         }
 
-        public class Clouds
+        public class CloudsModel
         {
-            public int all { get; set; }
+            [JsonProperty("all")]
+            public int Cloudiness { get; set; }
         }
 
-        public class Sys
+        public class SysModel
         {
-            public int type { get; set; }
-            public int id { get; set; }
-            public string country { get; set; }
-            public int sunrise { get; set; }
-            public int sunset { get; set; }
+            [JsonProperty("type")]
+            public int Type { get; set; }
+
+            [JsonProperty("id")]
+            public int Id { get; set; }
+
+            [JsonProperty("country")]
+            public string Country { get; set; }
+
+            [JsonProperty("sunrise")]
+            public int Sunrise { get; set; }
+
+            [JsonProperty("sunset")]
+            public int Sunset { get; set; }
         }
 
-        public class Weather
+        public class WeatherModel
         {
-            public int id { get; set; }
-            public string main { get; set; }
-            public string description { get; set; }
-            public string icon { get; set; }
+            [JsonProperty("id")]
+            public int Id { get; set; }
+
+            [JsonProperty("main")]
+            public string WetOrDry { get; set; }
+
+            [JsonProperty("description")]
+            public string Description { get; set; }
+
+            [JsonProperty("icon")]
+            public string WeatherIconId { get; set; }
         }
 
     }

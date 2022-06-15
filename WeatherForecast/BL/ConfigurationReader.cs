@@ -11,20 +11,20 @@ namespace BL
 {
     public class ConfigurationReader : IConfigurationReader
     {
-        private WeatherSettings dashboardHeaderConfig;
+        private WeatherSettings _dashboardHeaderConfig;
 
         public ConfigurationReader(IOptionsMonitor<WeatherSettings> optionsMonitor)
         {
-            this.dashboardHeaderConfig = optionsMonitor.CurrentValue;
+            this._dashboardHeaderConfig = optionsMonitor.CurrentValue;
             optionsMonitor.OnChange(config =>
             {
-                this.dashboardHeaderConfig = config;
+                this._dashboardHeaderConfig = config;
             });
         }
 
         public string ReadDashboardHeaderSettings()
         {
-            return JsonConvert.SerializeObject(this.dashboardHeaderConfig);
+            return JsonConvert.SerializeObject(this._dashboardHeaderConfig);
         }
     }
 }

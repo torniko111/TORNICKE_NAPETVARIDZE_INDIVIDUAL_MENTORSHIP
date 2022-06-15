@@ -13,31 +13,30 @@ namespace Web_api.Controllers
     public class WeatherController : ControllerBase
     {
         private readonly IWeatherService _weatherService;
-        private readonly ILogger<WeatherController> _logger;
 
-        public WeatherController(IWeatherService userService, ILogger<WeatherController> logger, IRecurringJobManager recurringJobManager)
+
+        public WeatherController(IWeatherService userService)
         {
             _weatherService = userService;
-            _logger = logger;
         }
 
         [Authorize(Roles ="member")]
         [HttpGet("getCurrentWeatherByCity")]
-        public async Task<double> getCurrTemp(string city)
+        public async Task<double> GetCurrTemp(string city)
         {
             return await _weatherService.AddWeather(city);
         }
 
         [HttpGet("getWeatherForecastByCityAndNumberOfDays")]
-        public async Task<Dictionary<double, string>> getweatherforecast(string city, int days)
+        public async Task<Dictionary<double, string>> GetWeatherForecast(string city, int days)
         {
             return await _weatherService.GetWeatherForecast(city, days);
         }
 
         [HttpGet("reportsByDate")]
-        public async Task<List<Weather>> getreports(DateTime from, DateTime to, string city)
+        public async Task<List<Weather>> Getreports(DateTime from, DateTime to, string city)
         {
-            return await _weatherService.getreport(from, to, city);
+            return await _weatherService.Getreport(from, to, city);
         }
     }
 }

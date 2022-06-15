@@ -38,14 +38,16 @@ namespace IsRoleDemo
 
             try
             {
+                //first time we check if the arguments contains /seed at the application start
                 var seed = args.Contains("/seed");
                 if (seed)
                 {
+                    //if there is, we remove it.
                     args = args.Except(new[] { "/seed" }).ToArray();
                 }
 
                 var host = CreateHostBuilder(args).Build();
-
+                //after the builder has done, and seed argument has been passed we ensure seed the data.
                 if (seed)
                 {
                     Log.Information("Seeding database...");

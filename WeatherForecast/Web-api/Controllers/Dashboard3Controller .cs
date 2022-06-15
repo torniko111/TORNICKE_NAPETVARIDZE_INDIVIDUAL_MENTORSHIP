@@ -8,16 +8,16 @@ namespace Web_api.Controllers
     [ApiController]
     public class Dashboard3Controller : ControllerBase
     {
-        private readonly IConfigurationReader configurationReader;
+        private readonly IConfigurationReader _configurationReader;
 
         public Dashboard3Controller(IConfigurationReader configurationReader)
         {
-            this.configurationReader = configurationReader;
+            this._configurationReader = configurationReader;
         }
         [HttpGet]
         public IActionResult Index()
         {
-            return Content(this.configurationReader.ReadDashboardHeaderSettings());
+            return Content(this._configurationReader.ReadDashboardHeaderSettings());
         }
     }
 }

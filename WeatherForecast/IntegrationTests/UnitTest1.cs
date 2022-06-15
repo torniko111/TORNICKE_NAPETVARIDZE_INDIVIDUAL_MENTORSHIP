@@ -9,9 +9,8 @@ namespace IntegrationTests
     [TestClass]
     public class UnitTest1
     {
-        public async Task<double> GetWeatherApi(string city)
+        public static async Task<double> GetWeatherApi(string city)
         {
-
             if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
             {
                 throw new ArgumentNullException(nameof(city));
@@ -19,7 +18,7 @@ namespace IntegrationTests
 
             //needs to be moved to appsettings
             string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
-            HttpClient client = new HttpClient();
+            HttpClient client = new();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
 
             var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid={apikey}");
@@ -35,8 +34,7 @@ namespace IntegrationTests
         [TestMethod]
         public void TestMethod1()
         {
-            double C = -10000;
-            C = GetWeatherApi("tbilisi").Result;
+            double C = GetWeatherApi("tbilisi").Result;
 
             Assert.IsTrue(C != -10000);
         }

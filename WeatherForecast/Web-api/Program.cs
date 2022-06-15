@@ -52,7 +52,7 @@ builder.Services.AddSwaggerGen(c => {
                         Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
@@ -96,10 +96,10 @@ app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(con
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => CallWeather(builder.Configuration.GetValue<string>("WeatherSettings:Cities"), builder.Configuration.GetValue<string>("WeatherSettings:Cron")));
 static void CallWeather(string city, string Cron)
 {
-    if (city.Contains(","))
+    if (city.Contains(','))
     {
         string[] cities = city.Split(',');
-        if (Cron.Contains(","))
+        if (Cron.Contains(','))
         {
             string[] Crons = Cron.Split(',');
             for (int i = 0; i < cities.Length; i++)
@@ -115,7 +115,7 @@ static void CallWeather(string city, string Cron)
     }
     else
     {
-        if (Cron.Contains(","))
+        if (Cron.Contains(','))
         {
             string[] Crons = Cron.Split(',');
             RecurringJob.AddOrUpdate<WeatherService>($"{city}", x => x.GetCurrentWeatherByCity(city), Crons[0]);
@@ -129,12 +129,10 @@ static void CallWeather(string city, string Cron)
 
 static void deleter()
 {
-    using (var connection = JobStorage.Current.GetConnection())
+    using var connection = JobStorage.Current.GetConnection();
+    foreach (var recurringJob in connection.GetRecurringJobs())
     {
-        foreach (var recurringJob in connection.GetRecurringJobs())
-        {
-            RecurringJob.RemoveIfExists(recurringJob.Id);
-        }
+        RecurringJob.RemoveIfExists(recurringJob.Id);
     }
 }
 app.Run();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,9 +11,9 @@ namespace BL.CommandPattern
         {
             Console.WriteLine("please enter city: ");
         }
-        public string Name
+        public CommandAction Action
         {
-            get { return "1"; }
+            get { return CommandAction.City; }
         }
     }
 }

@@ -6,21 +6,21 @@ namespace BL
 {
     public class CommentContext
     {
-        public CommentContext comment { get; set; }
-        private IChooseCommentStrategy ChooseCommentStrategy;
+        public CommentContext Comment { get; set; }
+        private IChooseCommentStrategy _ChooseCommentStrategy;
 
         public CommentContext(IChooseCommentStrategy Comment)
         {
-            this.ChooseCommentStrategy = Comment;
+            this._ChooseCommentStrategy = Comment;
         }
         public void SetStrategy(IChooseCommentStrategy Comment)
         {
-            this.ChooseCommentStrategy = Comment;
+            this._ChooseCommentStrategy = Comment;
         }
 
-        public string Comment()
+        public string GetComment()
         {
-           return ChooseCommentStrategy.Comment();
+           return _ChooseCommentStrategy.Comment();
         }
 
         public void ChooseComment()

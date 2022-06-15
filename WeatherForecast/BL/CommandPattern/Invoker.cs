@@ -7,15 +7,18 @@ namespace BL.CommandPattern
     public class Invoker
     {
         ICommand cmd = null;
-        public ICommand GetCommand(string action)
+        public ICommand GetCommand(CommandAction action)
         {
             switch (action)
             {
-                case "1":
+                case CommandAction.City:
                     cmd = new ChooseCity();
                     break;
-                case "2":
+                case CommandAction.CityForecast:
                     cmd = new ChooseCityForecast();
+                    break;
+                case CommandAction.Stop:
+                    cmd = new StopCommand();
                     break;
                 default:
                     break;

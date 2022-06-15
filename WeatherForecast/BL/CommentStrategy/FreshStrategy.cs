@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.CommentStrategy;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace BL
     {
         public string Comment()
         {
-            return "its fresh";
+            return CommentConstants.FreshComment;
         }
     }
 }

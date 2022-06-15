@@ -8,7 +8,6 @@ namespace DAL.UnitOfWork
     public interface IUnitOfWork : IDisposable
     {
         IWeatherRepository Weather { get;}
-
         int Save();
     }
 }

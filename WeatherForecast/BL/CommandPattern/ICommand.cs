@@ -6,7 +6,7 @@ namespace BL.CommandPattern
 {
     public interface  ICommand
     {
-        string Name { get; }
+        CommandAction Action { get; }
         void Execute();
     }
 }

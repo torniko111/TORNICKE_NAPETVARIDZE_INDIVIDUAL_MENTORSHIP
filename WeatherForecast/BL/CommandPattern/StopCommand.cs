@@ -10,9 +10,9 @@ namespace BL.CommandPattern
         {
             Console.WriteLine("Exited");
         }
-        public string Name
+        public CommandAction Action
         {
-            get { return "Stop"; }
+            get { return CommandAction.Stop; }
         }
     }
 }

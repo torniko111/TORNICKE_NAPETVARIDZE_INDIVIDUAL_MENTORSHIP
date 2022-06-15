@@ -10,9 +10,9 @@ namespace BL.CommandPattern
         {
             Console.WriteLine("please cities for forecast: ");
         }
-        public string Name
+        public CommandAction Action
         {
-            get { return "2"; }
+            get { return CommandAction.CityForecast; }
         }
     }
 }

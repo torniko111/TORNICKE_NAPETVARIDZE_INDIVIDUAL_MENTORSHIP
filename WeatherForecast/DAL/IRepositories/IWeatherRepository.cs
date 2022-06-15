@@ -12,4 +12,3 @@ namespace DAL.IRepositories
         Task<List<Weather>> AddRange(List<Weather> weathers);
     }
 }
- 

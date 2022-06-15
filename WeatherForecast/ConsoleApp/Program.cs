@@ -46,7 +46,7 @@ while (nav != 1 || nav != 2 || nav != 3)
     string city;
     if (nav == 1)
     {
-        ICommand command = invoker.GetCommand("1");
+        ICommand command = invoker.GetCommand(CommandAction.City);
         command.Execute();
         city = Console.ReadLine();
         city = Regex.Replace(city, @"\s+", "");
@@ -77,7 +77,7 @@ while (nav != 1 || nav != 2 || nav != 3)
     }
     if (nav == 2)
     {
-        ICommand commands = invoker.GetCommand("2");
+        ICommand commands = invoker.GetCommand(CommandAction.CityForecast);
         commands.Execute();
         city = Console.ReadLine();
 
@@ -94,9 +94,9 @@ while (nav != 1 || nav != 2 || nav != 3)
     }
     if (nav == 3)
     {
-        ICommand command = invoker.GetCommand("1");
+        ICommand command = invoker.GetCommand(CommandAction.City);
         command.Execute();
-        command = invoker.GetCommand("Stop");
+        command = invoker.GetCommand(CommandAction.Stop);
         command.Execute();
         Console.ReadLine();
         break;

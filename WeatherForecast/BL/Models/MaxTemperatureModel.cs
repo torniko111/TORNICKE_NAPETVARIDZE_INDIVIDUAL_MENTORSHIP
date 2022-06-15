@@ -17,7 +17,7 @@ namespace BL.Models
             public string City { get; set; }
             public double Temperature { get; set; }
             public double Miliseconds { get; set; }
-            public string failedorcanceled { get; set; }
+            public string Failedorcanceled { get; set; }
 
 
             public override string ToString()

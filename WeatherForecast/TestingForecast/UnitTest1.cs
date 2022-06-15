@@ -41,7 +41,7 @@ namespace TestingForecast
 
             //needs to be moved to appsettings
             string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
-            HttpClient client = new HttpClient();
+            HttpClient client = new();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
 
             var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid={apikey}");
@@ -60,7 +60,7 @@ namespace TestingForecast
             {
                 WeatherService.comment = new CommentContext(new WarmlyStrategy());
             }
-            Console.WriteLine(WeatherService.comment.Comment());
+            Console.WriteLine(WeatherService.comment.GetComment());
 
             return tmpdegreesc;
         }
@@ -78,8 +78,7 @@ namespace TestingForecast
         [TestMethod]
         public void TestMethod1()
         {
-            double C = -10000;
-            C = AddWeather("tbilisi").Result;
+            double C = AddWeather("tbilisi").Result;
 
             Assert.IsTrue(C != -10000);
         }
@@ -96,14 +95,14 @@ namespace TestingForecast
 
             if (C > 16)
             {
-                if (WeatherService.comment.Comment() == "its fresh")
+                if (WeatherService.comment.GetComment() == "its fresh")
                 {
                     result = true;
                 }
             }
             else if (C <= 16)
             {
-                if (WeatherService.comment.Comment() == "its Warm")
+                if (WeatherService.comment.GetComment() == "its Warm")
                 {
                     result = true;
                 }
@@ -125,14 +124,14 @@ namespace TestingForecast
 
             if (C > 16)
             {
-                if (WeatherService.comment.Comment() == "its fresh")
+                if (WeatherService.comment.GetComment() == "its fresh")
                 {
                     result = true;
                 }
             }
             else if (C <= 16)
             {
-                if (WeatherService.comment.Comment() == "its Warm")
+                if (WeatherService.comment.GetComment() == "its Warm")
                 {
                     result = true;
                 }
@@ -147,7 +146,7 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
 
-        public Task<List<Weather>> getreport(DateTime from, DateTime to)
+        public Task<List<Weather>> Getreport(DateTime from, DateTime to)
         {
             throw new NotImplementedException();
         }
@@ -172,7 +171,7 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
 
-        public Task<List<Weather>> getreport(DateTime from, DateTime to, string city)
+        public Task<List<Weather>> Getreport(DateTime from, DateTime to, string city)
         {
             throw new NotImplementedException();
         }
