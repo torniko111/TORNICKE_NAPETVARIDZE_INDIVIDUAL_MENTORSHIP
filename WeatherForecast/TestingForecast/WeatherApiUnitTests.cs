@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 using BL.Interfaces;
 using DAL.Models;
 using System.Collections.Generic;
+using BL.CommentStrategy;
 
 namespace TestingForecast
 {
     [TestClass]
-    public class UnitTest1 : IWeatherService
+    public class WeatherApiUnitTests : IWeatherService
     {
 
         public Task<Weather> AddAsync(Weather user)
@@ -52,15 +53,24 @@ namespace TestingForecast
             var tmpdegreesc = Math.Round(((float)obj.main.temp - 272.15), 2);
 
 
-            if (tmpdegreesc > 16)
+            switch (tmpdegreesc)
             {
-                WeatherService.comment = new CommentContext(new FreshStrategy());
+                case < 0:
+                    WeatherService.comment = new CommentContext(new DressWarmlyStrategy());
+                    break;
+                case < 21:
+                    WeatherService.comment = new CommentContext(new FreshStrategy());
+                    break;
+                case < 31:
+                    WeatherService.comment = new CommentContext(new GoodWeatherStrategy());
+                    break;
+                case > 30:
+                    WeatherService.comment = new CommentContext(new BeachTimeStrategy());
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                WeatherService.comment = new CommentContext(new DressWarmlyStrategy());
-            }
-            Console.WriteLine(WeatherService.comment.GetComment());
+
 
             return tmpdegreesc;
         }
@@ -76,7 +86,7 @@ namespace TestingForecast
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void GetWeatherApi_ApiCall_ResponseDouble()
         {
             double C = AddWeather("tbilisi").Result;
 
@@ -84,25 +94,38 @@ namespace TestingForecast
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void GetComment_CurrentTemperature_CommentForLondon()
         {
             //Arrange
-
             double C = AddWeather("london").Result;
-            //Act
 
+            //Act
             bool result = false;
 
-            if (C > 16)
+            if (C < 0)
+            {
+                if (WeatherService.comment.GetComment() == "Dress warmly")
+                {
+                    result = true;
+                }
+            }
+            else if (C < 21)
             {
                 if (WeatherService.comment.GetComment() == "its fresh")
                 {
                     result = true;
                 }
             }
-            else if (C <= 16)
+            else if (C < 31)
             {
-                if (WeatherService.comment.GetComment() == "its Warm")
+                if (WeatherService.comment.GetComment() == "Good weather")
+                {
+                    result = true;
+                }
+            }
+            else
+            {
+                if (WeatherService.comment.GetComment() == "it's time to go to the beach")
                 {
                     result = true;
                 }
@@ -113,25 +136,38 @@ namespace TestingForecast
         }
 
         [TestMethod]
-        public void TestMethod3()
+        public void GetComment_CurrentTemperature_CommentForTbilisi()
         {
             //Arrange
-
             double C = AddWeather("tbilisi").Result;
-            //Act
 
+            //Act
             bool result = false;
 
-            if (C > 16)
+            if (C < 0)
+            {
+                if (WeatherService.comment.GetComment() == "Dress warmly")
+                {
+                    result = true;
+                }
+            }
+            else if (C < 21)
             {
                 if (WeatherService.comment.GetComment() == "its fresh")
                 {
                     result = true;
                 }
             }
-            else if (C <= 16)
+            else if (C < 31)
             {
-                if (WeatherService.comment.GetComment() == "its Warm")
+                if (WeatherService.comment.GetComment() == "Good weather")
+                {
+                    result = true;
+                }
+            }
+            else  
+            {
+                if (WeatherService.comment.GetComment() == "it's time to go to the beach")
                 {
                     result = true;
                 }

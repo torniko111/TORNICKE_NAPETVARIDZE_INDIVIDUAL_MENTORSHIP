@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IntegrationTests
 {
     [TestClass]
-    public class UnitTest1
+    public class WeatherApiIntegrationTest
     {
         public static async Task<double> GetWeatherApi(string city)
         {
@@ -32,10 +32,13 @@ namespace IntegrationTests
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void GetWeatherApi_ApiCall_ResponseTypeOK()
         {
+            // arrange
+            // act
             double C = GetWeatherApi("tbilisi").Result;
 
+            // assert
             Assert.IsTrue(C != -10000);
         }
     }

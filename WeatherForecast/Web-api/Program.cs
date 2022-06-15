@@ -5,11 +5,8 @@ using DAL.IRepositories;
 using DAL.Models;
 using DAL.TypeRepository;
 using Hangfire;
-using Hangfire.AspNetCore;
-using Hangfire.SqlServer;
 using Hangfire.Storage;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -64,7 +61,6 @@ builder.Services.AddAuthentication("Bearer")
         options.Authority = "https://localhost:5001";
     });
 
-
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();
 
@@ -73,9 +69,6 @@ builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-
 
 var app = builder.Build();
 
@@ -92,7 +85,7 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => deleter());
+app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => AllReccuringJobsDeleter());
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => CallWeather(builder.Configuration.GetValue<string>("WeatherSettings:Cities"), builder.Configuration.GetValue<string>("WeatherSettings:Cron")));
 static void CallWeather(string city, string Cron)
 {
@@ -127,7 +120,7 @@ static void CallWeather(string city, string Cron)
     }
 }
 
-static void deleter()
+static void AllReccuringJobsDeleter()
 {
     using var connection = JobStorage.Current.GetConnection();
     foreach (var recurringJob in connection.GetRecurringJobs())
@@ -136,4 +129,3 @@ static void deleter()
     }
 }
 app.Run();
-
