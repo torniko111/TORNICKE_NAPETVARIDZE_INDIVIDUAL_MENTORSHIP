@@ -5,11 +5,11 @@ using System.Text;
 
 namespace BL
 {
-    public class WarmlyStrategy : IChooseCommentStrategy
+    public class DressWarmlyStrategy : IChooseCommentStrategy
     {
         public string Comment()
         {
-            return CommentConstants.WarmlyComment;
+            return CommentConstants.DressWarmlyComment;
         }
     }
 }

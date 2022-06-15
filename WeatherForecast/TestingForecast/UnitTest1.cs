@@ -58,7 +58,7 @@ namespace TestingForecast
             }
             else
             {
-                WeatherService.comment = new CommentContext(new WarmlyStrategy());
+                WeatherService.comment = new CommentContext(new DressWarmlyStrategy());
             }
             Console.WriteLine(WeatherService.comment.GetComment());
 

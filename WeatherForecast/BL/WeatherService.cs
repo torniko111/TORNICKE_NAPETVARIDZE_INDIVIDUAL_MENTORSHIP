@@ -1,4 +1,5 @@
 ﻿
+using BL.CommentStrategy;
 using BL.Interfaces;
 using BL.Models;
 using DAL.IRepositories;
@@ -66,17 +67,25 @@ namespace BL
             _weatherRepository.Add(weather);
             var tmpdegreesc = Math.Round(((float)obj.Celsius.Temp), 2);
 
+            switch (tmpdegreesc)
+            {
+                case < 0:
+                    comment = new CommentContext(new DressWarmlyStrategy());
+                    break;
+                case < 21:
+                    comment = new CommentContext(new FreshStrategy());
+                    break;
+                case < 31:
+                    comment = new CommentContext(new GoodWeatherStrategy());
+                    break;
+                case > 30:
+                    comment = new CommentContext(new BeachTimeStrategy());
+                    break;
+                default:
+                    break;
+            }
 
-            if (tmpdegreesc > 16)
-            {
-                comment = new CommentContext(new FreshStrategy());
-            }
-            else
-            {
-                comment = new CommentContext(new WarmlyStrategy());
-            }
             Console.WriteLine(comment.GetComment());
-
             return tmpdegreesc;
         }
 
@@ -125,20 +134,25 @@ namespace BL
             {
                 var tmpdegreesc = (double)item.main.temp;
 
-                if (tmpdegreesc > 16)
+                switch (tmpdegreesc)
                 {
-                    comment = new CommentContext(new FreshStrategy());
+                    case < 0:
+                        comment = new CommentContext(new DressWarmlyStrategy());
+                        break;
+                    case < 21:
+                        comment = new CommentContext(new FreshStrategy());
+                        break;
+                    case < 31:
+                        comment = new CommentContext(new GoodWeatherStrategy());
+                        break;
+                    case > 30:
+                        comment = new CommentContext(new BeachTimeStrategy());
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    comment = new CommentContext(new WarmlyStrategy());
-                }
-
-
                 result.Add(tmpdegreesc, comment.GetComment());
-
             }
-
             return result;
         }
 
@@ -151,7 +165,6 @@ namespace BL
         {
             throw new System.NotImplementedException();
         }
-
 
         public async Task<MaxTemperatureModel> GetMaxCurrentTemperature(string[] cities)
         {

@@ -8,7 +8,9 @@ namespace BL.CommentStrategy
 {
     public class CommentConstants
     {
-        public const string FreshComment = "its fresh";
-        public const string WarmlyComment = "its Warm";
+        public const string FreshComment = "It's fresh";
+        public const string DressWarmlyComment = "Dress warmly";
+        public const string GoodWeatherComment = "Good weather";
+        public const string ItsTimeComment = "it's time to go to the beach";
     }
 }
