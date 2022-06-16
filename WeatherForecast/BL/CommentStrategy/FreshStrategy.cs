@@ -9,7 +9,7 @@ namespace BL
     {
         public string Comment()
         {
-            return CommentConstants.FreshComment;
+            return CommentConstants.FRESH;
         }
     }
 }

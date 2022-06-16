@@ -22,7 +22,6 @@ namespace BL
         public static CommentContext comment;
         readonly Stopwatch st = new();
 
-
         public WeatherService(IWeatherRepository weatherRepository)
         {
             this._weatherRepository = weatherRepository;

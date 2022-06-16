@@ -10,7 +10,7 @@ namespace BL.CommentStrategy
     {
         public string Comment()
         {
-            return CommentConstants.ItsTimeComment;
+            return CommentConstants.BEACH_TIME;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace BL.CommentStrategy
     {
         public string Comment()
         {
-            return CommentConstants.GoodWeatherComment;
+            return CommentConstants.GOOD_WEATHER;
         }
     }
 }
