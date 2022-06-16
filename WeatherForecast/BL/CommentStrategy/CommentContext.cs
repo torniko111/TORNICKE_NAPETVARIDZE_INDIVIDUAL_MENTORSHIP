@@ -23,7 +23,7 @@ namespace BL
            return _ChooseCommentStrategy.Comment();
         }
 
-        public void ChooseComment()
+        public static void ChooseComment()
         {
             Console.WriteLine("please text city");
         }
