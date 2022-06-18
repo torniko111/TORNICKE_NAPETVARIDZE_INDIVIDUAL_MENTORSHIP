@@ -11,7 +11,7 @@ namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20220609112310_ret")]
-    partial class ret
+    partial class DbFirstCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

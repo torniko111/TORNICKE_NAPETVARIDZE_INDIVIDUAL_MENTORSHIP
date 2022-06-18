@@ -38,10 +38,14 @@ int nav = 0;
 Console.WriteLine("please choose numbers 1-3: 1. current weather by city, 2.weather forecast by city and number of days 3. exit.");
 
 int.TryParse(Console.ReadLine(), out nav);
+if(nav == 0)
+{
+    Console.WriteLine("please enter valid city name: ");
+}
 
 while (nav != 1 || nav != 2 || nav != 3)
 {
-    Invoker invoker = new Invoker();
+    Invoker invoker = new();
 
     string city;
     if (nav == 1)
