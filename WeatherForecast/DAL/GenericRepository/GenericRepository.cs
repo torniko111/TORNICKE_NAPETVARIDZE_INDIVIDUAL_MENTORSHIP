@@ -13,7 +13,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
     public void Add(T entity)
     {
-        context.Set<T>().AddAsync(entity);
+        context.Set<T>().Add(entity);
     }
     public void AddRange(IEnumerable<T> entities)
     {
