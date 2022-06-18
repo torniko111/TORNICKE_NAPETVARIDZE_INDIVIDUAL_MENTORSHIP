@@ -3,6 +3,7 @@ using BL.CommandPattern;
 using BL.Interfaces;
 using DAL.data;
 using DAL.IRepositories;
+using DAL.Models;
 using DAL.TypeRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

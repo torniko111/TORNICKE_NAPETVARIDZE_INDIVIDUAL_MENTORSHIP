@@ -9,5 +9,6 @@ namespace DAL.Models
         public string Cities { get; set; }
         public string Cron { get; set; }
         public string LogPath { get; set; }
+        public string ApiKey { get; set; }
     }
 }
