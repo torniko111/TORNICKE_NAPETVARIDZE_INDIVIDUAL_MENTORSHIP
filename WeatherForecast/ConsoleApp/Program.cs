@@ -3,7 +3,6 @@ using BL.CommandPattern;
 using BL.Interfaces;
 using DAL.data;
 using DAL.IRepositories;
-using DAL.Models;
 using DAL.TypeRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +13,7 @@ using System.Text.RegularExpressions;
 
 var builder = new ConfigurationBuilder();
 BuildConfig(builder);
+IConfiguration confing = builder.Build();
 
 Log.Logger = new LoggerConfiguration()
    .ReadFrom.Configuration(builder.Build())
@@ -26,15 +26,14 @@ Log.Logger.Information("Application Starting");
 var host = Host.CreateDefaultBuilder()
     .ConfigureServices((context, services) =>
     {
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WeatherDb;Trusted_Connection=True;MultipleActiveResultSets=true"));
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(confing.GetConnectionString("DefaultConnection")));
         services.AddScoped<IWeatherRepository, WeatherRepository>();
         services.AddTransient<IWeatherService, WeatherService>();
     })
     .UseSerilog()
     .Build();
 
-var svc = ActivatorUtilities.CreateInstance<WeatherService>(host.Services);
-WeatherService svc1 = ActivatorUtilities.CreateInstance<WeatherService>(host.Services);
+WeatherService svc = ActivatorUtilities.CreateInstance<WeatherService>(host.Services);
 int nav = 0;
 Console.WriteLine("please choose numbers 1-3: 1. current weather by city, 2.weather forecast by city and number of days 3. exit.");
 
@@ -51,11 +50,11 @@ while (nav != 1 || nav != 2 || nav != 3)
         command.Execute();
         city = Console.ReadLine();
         city = Regex.Replace(city, @"\s+", "");
-        if (city.Contains(","))
+        if (city.Contains(','))
         {
             string[] namesArray = city.Split(',');
 
-            var dateobjects = await svc1.GetMaxCurrentTemperature(namesArray);
+            var dateobjects = await svc.GetMaxCurrentTemperature(namesArray);
 
             foreach (var item in dateobjects.Temperatures)
             {
@@ -71,7 +70,7 @@ while (nav != 1 || nav != 2 || nav != 3)
                 city = Console.ReadLine();
             }
 
-            var tmpDegreesC = svc1.AddWeather(city).Result;
+            var tmpDegreesC = svc.AddWeather(city).Result;
             Console.WriteLine($"Current temperature is {tmpDegreesC}°C in {city}");
             Console.ReadKey();
         }
@@ -85,7 +84,7 @@ while (nav != 1 || nav != 2 || nav != 3)
         Console.WriteLine("enter Days of forecast: ");
         //needs to be checked
         int daysofforecast = int.Parse(Console.ReadLine());
-        var tmpDegreesC = svc1.GetWeatherForecast(city, daysofforecast).Result;
+        var tmpDegreesC = svc.GetWeatherForecast(city, daysofforecast).Result;
         foreach (KeyValuePair<double, string> author in tmpDegreesC)
         {
             Console.WriteLine("in {0} is : {1} , Comment: {2}",
@@ -105,9 +104,9 @@ while (nav != 1 || nav != 2 || nav != 3)
 
 }
         static void BuildConfig(IConfigurationBuilder builder)
-{
-    builder.SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-        .AddEnvironmentVariables();
-}
+        {
+            builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .AddEnvironmentVariables();
+        }

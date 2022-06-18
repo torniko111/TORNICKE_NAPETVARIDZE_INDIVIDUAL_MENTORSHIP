@@ -20,7 +20,7 @@ namespace Web_api.Controllers
             _weatherService = userService;
         }
 
-        [Authorize(Roles ="member")]
+        //[Authorize(Roles ="member")]
         [HttpGet("getCurrentWeatherByCity")]
         public async Task<double> GetCurrTemp(string city)
         {

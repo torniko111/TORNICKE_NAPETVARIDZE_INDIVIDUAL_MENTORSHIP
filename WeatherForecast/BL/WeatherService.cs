@@ -4,6 +4,7 @@ using BL.Interfaces;
 using BL.Models;
 using DAL.IRepositories;
 using DAL.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,16 @@ namespace BL
     public class WeatherService : IWeatherService
     {
         private readonly IWeatherRepository _weatherRepository;
+        private readonly IConfiguration _configuration;
+        private readonly string _apiKey;
         public static CommentContext comment;
         readonly Stopwatch st = new();
 
-        public WeatherService(IWeatherRepository weatherRepository)
+        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration)
         {
             this._weatherRepository = weatherRepository;
+            this._configuration = configuration;
+            this._apiKey = _configuration.GetValue<string>("ApiKey");
         }
 
         public void AddAsync(Weather weather)
@@ -91,11 +96,10 @@ namespace BL
         private async Task<WeatherApiModel> GetCurrWeather(string city, CancellationToken cancellation)
         {
             //needs to be moved to appsettings
-            string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
             HttpClient client = new();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
             st.Start();
-            var response = await client.GetAsync($"/data/2.5/weather?q={city}&units=metric&appid={apikey}", cancellation);
+            var response = await client.GetAsync($"/data/2.5/weather?q={city}&units=metric&appid={_apiKey}", cancellation);
             var stringResult = await response.Content.ReadAsStringAsync(cancellation);
             st.Stop();
             var obj = JsonConvert.DeserializeObject<WeatherApiModel>(stringResult);
@@ -112,19 +116,18 @@ namespace BL
             }
 
             //needs to be moved to appsettings
-            string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
             HttpClient client = new();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
             double lat;
             double lon;
-            var latlon = await client.GetAsync($"/data/2.5/weather?q={city}&appid={apikey}");
+            var latlon = await client.GetAsync($"/data/2.5/weather?q={city}&appid={_apiKey}");
             var stringResult2 = await latlon.Content.ReadAsStringAsync();
             var obj2 = JsonConvert.DeserializeObject<dynamic>(stringResult2);
 
             lat = (double)obj2.coord.lat;
             lon = (double)obj2.coord.lon;
 
-            var response = await client.GetAsync($"/data/2.5/forecast?lat={lat}&lon={lon}&cnt={days}&units=metric&appid={apikey}");
+            var response = await client.GetAsync($"/data/2.5/forecast?lat={lat}&lon={lon}&cnt={days}&units=metric&appid={_apiKey}");
             var stringResult = await response.Content.ReadAsStringAsync();
 
             var obj = JsonConvert.DeserializeObject<dynamic>(stringResult);
