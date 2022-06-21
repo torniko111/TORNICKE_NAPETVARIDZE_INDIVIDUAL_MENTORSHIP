@@ -38,5 +38,12 @@ namespace Web_api.Controllers
         {
             return await _weatherService.Getreport(from, to, city);
         }
+
+        [HttpGet("averageTemperatures")]
+        public async Task<string> Averagetemperatures(string city, string period)
+        {
+            return await _weatherService.AverageStatistics(city, period);
+        }
+
     }
 }

@@ -211,5 +211,10 @@ namespace TestingForecast
         {
             throw new NotImplementedException();
         }
+
+        public Task<string> AverageStatistics(string[] city, string[] period)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

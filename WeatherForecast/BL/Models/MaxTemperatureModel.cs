@@ -17,15 +17,12 @@ namespace BL.Models
             public string City { get; set; }
             public double Temperature { get; set; }
             public double Miliseconds { get; set; }
-            public string Failedorcanceled { get; set; }
-
+            public string FailedOrCanceled { get; set; }
 
             public override string ToString()
             {
-                return $"city = {City}, C : {Temperature}, ExecutionTime: {Miliseconds}";
+                return $"city = {City}, C : {Math.Round(Temperature, 2)}, ExecutionTime: {Miliseconds}";
             }
         }
     }
-
-
 }

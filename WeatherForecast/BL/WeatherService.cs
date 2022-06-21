@@ -36,7 +36,7 @@ namespace BL
 
         public void AddAsync(Weather weather)
         {
-             _weatherRepository.Add(weather);
+            _weatherRepository.Add(weather);
         }
 
         public Task DeleteAsync(Weather weather)
@@ -180,7 +180,7 @@ namespace BL
             foreach (var city in cities)
             {
                 var clt = new CancellationTokenSource();
-                clt.CancelAfter(200);
+                clt.CancelAfter(700);
                 var task = Task.Run(async () =>
                 {
                     if (!clt.Token.IsCancellationRequested)
@@ -264,7 +264,27 @@ namespace BL
             }
             await _weatherRepository.AddRange(weathers);
         }
+        public Task<string> AverageStatistics(string city, string period)
+        {
+            string[] periods = period.Split(", ");
+            string[] cities = city.Split(", ");
 
+            var stringbuilder = new StringBuilder();
+            for (int i = 0; i < cities.Length; i++)
+            {
+                int minusdate = int.Parse(periods[i]);
+                var citynames = _weatherRepository.GetAll().Where(x => x.CityName == cities[i] && x.CreatedOn >= (DateTime.Now.AddHours(-minusdate)));
+
+                foreach (var item in citynames)
+                {
+                    stringbuilder.Append(item.CityName + " ");
+                    stringbuilder.Append(item.TempC.ToString() + " ");
+                    stringbuilder.AppendLine(item.CreatedOn.ToString());
+                }
+            }
+
+            return Task.FromResult(stringbuilder.ToString());
+        }
         Task<Weather> IWeatherService.AddAsync(Weather weather)
         {
             throw new NotImplementedException();
