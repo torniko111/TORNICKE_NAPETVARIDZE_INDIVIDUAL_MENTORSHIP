@@ -287,8 +287,7 @@ namespace BL
                 }
                 foreach (var item in CityAverages)
                 {
-                    stringbuilder.Append(cities[i] + " ");
-                    stringbuilder.AppendLine(item.AvgTemperature + " ");
+                    stringbuilder.AppendLine($"Average C for : { cities[i]} before {periods[i]} hours from now is {item.AvgTemperature}");
                 }
             }
 
