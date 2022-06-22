@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DAL.IGenericRepository;
 using DAL.GenericRepository;
+using System.Linq;
 
 namespace BL
 {
@@ -273,13 +274,21 @@ namespace BL
             for (int i = 0; i < cities.Length; i++)
             {
                 int minusdate = int.Parse(periods[i]);
-                var citynames = _weatherRepository.GetAll().Where(x => x.CityName == cities[i] && x.CreatedOn >= (DateTime.Now.AddHours(-minusdate)));
+                var CityByDateFiltered = _weatherRepository.GetAll().Where(x => x.CityName == cities[i] && x.CreatedOn >= (DateTime.Now.AddHours(-minusdate)));
 
-                foreach (var item in citynames)
+                var CityAverages = CityByDateFiltered.GroupBy(g => g.CityName, s => s.TempC).Select(g => new
                 {
-                    stringbuilder.Append(item.CityName + " ");
-                    stringbuilder.Append(item.TempC.ToString() + " ");
-                    stringbuilder.AppendLine(item.CreatedOn.ToString());
+                    City = g.Key,
+                    AvgTemperature = Math.Round(g.Average(),2)
+                });
+                if (!CityAverages.Any())
+                {
+                    stringbuilder.AppendLine(cities[i] + " no statistics");
+                }
+                foreach (var item in CityAverages)
+                {
+                    stringbuilder.Append(cities[i] + " ");
+                    stringbuilder.AppendLine(item.AvgTemperature + " ");
                 }
             }
 
