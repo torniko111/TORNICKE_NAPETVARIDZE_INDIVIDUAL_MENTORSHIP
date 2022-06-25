@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 using DAL.IGenericRepository;
 using DAL.GenericRepository;
 using System.Linq;
+using IsRoleDemo.Data;
+using IsRoleDemo.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BL
 {
@@ -24,14 +27,18 @@ namespace BL
     {
         private readonly IWeatherRepository _weatherRepository;
         private readonly IConfiguration _configuration;
+        private readonly AppDbContext applicationDbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _apiKey;
         public static CommentContext comment;
         readonly Stopwatch st = new();
 
-        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration)
+        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration, AppDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
         {
             this._weatherRepository = weatherRepository;
             this._configuration = configuration;
+            this.applicationDbContext = applicationDbContext;
+            this._userManager = userManager;
             this._apiKey = _configuration.GetValue<string>("ApiKey");
         }
 
@@ -171,6 +178,32 @@ namespace BL
             throw new System.NotImplementedException();
         }
 
+        public async Task<string> GetAllUsers()
+        {
+            //TODO: do not forget to change this to usermanager
+            var result = applicationDbContext.Users.ToList();
+
+            var stringbuilderusers = new StringBuilder();
+
+            foreach (var users in result)
+            {
+                stringbuilderusers.Append(users.UserName);
+                stringbuilderusers.AppendLine(users.Subcribed.ToString());
+            }
+            return await Task.FromResult(stringbuilderusers.ToString());
+        }
+
+
+        public async Task ChangeSub(string id)
+        {
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == id);
+
+            result.Subcribed = true;
+
+            applicationDbContext.Update(result);
+            applicationDbContext.SaveChanges();
+        }
+
         public async Task<MaxTemperatureModel> GetMaxCurrentTemperature(string[] cities)
         {
             var tasks = new List<Task>();
@@ -292,10 +325,6 @@ namespace BL
             }
 
             return Task.FromResult(stringbuilder.ToString());
-        }
-        Task<Weather> IWeatherService.AddAsync(Weather weather)
-        {
-            throw new NotImplementedException();
         }
     }
 }

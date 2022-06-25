@@ -1,6 +1,7 @@
 using BL;
 using BL.Interfaces;
 using DAL.data;
+using IsRoleDemo.Data;
 using DAL.IRepositories;
 using DAL.Models;
 using DAL.TypeRepository;
@@ -10,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using IsRoleDemo.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +70,11 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<IConfigurationReader, ConfigurationReader>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
+
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

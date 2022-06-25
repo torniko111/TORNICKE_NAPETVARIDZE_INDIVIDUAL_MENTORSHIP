@@ -45,5 +45,17 @@ namespace Web_api.Controllers
             return await _weatherService.AverageStatistics(city, period);
         }
 
+        [HttpGet("adasfafafa")]
+        public async Task<string> AllUsers()
+        {
+            return await _weatherService.GetAllUsers();
+        }
+
+        [HttpPut("fasfasafa")]
+        public async Task ChangeSub(string id)
+        {
+            await _weatherService.ChangeSub(id);
+        }
+
     }
 }
