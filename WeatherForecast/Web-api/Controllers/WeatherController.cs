@@ -14,7 +14,6 @@ namespace Web_api.Controllers
     {
         private readonly IWeatherService _weatherService;
 
-
         public WeatherController(IWeatherService userService)
         {
             _weatherService = userService;
@@ -45,17 +44,24 @@ namespace Web_api.Controllers
             return await _weatherService.AverageStatistics(city, period);
         }
 
-        [HttpGet("adasfafafa")]
+        [HttpGet("GetAllUsers")]
         public async Task<string> AllUsers()
         {
             return await _weatherService.GetAllUsers();
         }
 
-        [HttpPut("fasfasafa")]
-        public async Task ChangeSub(string id)
+        [Authorize(Roles = "admin")]
+        [HttpPut("Subscribe")]
+        public void Subscribe(string name)
         {
-            await _weatherService.ChangeSub(id);
+             _weatherService.Subcribe(name);
         }
 
+        [Authorize(Roles ="admin")]
+        [HttpPut("UnSubscribe")]
+        public void UnSubscribe(string name)
+        {
+             _weatherService.UnSubcribe(name);
+        }
     }
 }

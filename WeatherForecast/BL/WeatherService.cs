@@ -193,12 +193,21 @@ namespace BL
             return await Task.FromResult(stringbuilderusers.ToString());
         }
 
-
-        public async Task ChangeSub(string id)
+        public void Subcribe(string name)
         {
-            var result = _userManager.Users.SingleOrDefault(u => u.UserName == id);
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == name);
 
             result.Subcribed = true;
+
+            applicationDbContext.Update(result);
+            applicationDbContext.SaveChanges();
+        }
+
+        public void UnSubcribe(string name)
+        {
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == name);
+
+            result.Subcribed = false;
 
             applicationDbContext.Update(result);
             applicationDbContext.SaveChanges();
@@ -312,7 +321,7 @@ namespace BL
                 var CityAverages = CityByDateFiltered.GroupBy(g => g.CityName, s => s.TempC).Select(g => new
                 {
                     City = g.Key,
-                    AvgTemperature = Math.Round(g.Average(),2)
+                    AvgTemperature = Math.Round(g.Average(), 2)
                 });
                 if (!CityAverages.Any())
                 {

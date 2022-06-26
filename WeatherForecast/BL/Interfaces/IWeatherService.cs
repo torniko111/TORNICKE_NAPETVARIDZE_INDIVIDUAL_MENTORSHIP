@@ -21,6 +21,7 @@ namespace BL.Interfaces
         Task<Dictionary<double, string>> GetWeatherForecast(string city, int days);
         Task<string> AverageStatistics(string city, string period);
         Task<string> GetAllUsers();
-        Task ChangeSub(string id);
+        void Subcribe(string name);
+        void UnSubcribe(string name);
     }
 }

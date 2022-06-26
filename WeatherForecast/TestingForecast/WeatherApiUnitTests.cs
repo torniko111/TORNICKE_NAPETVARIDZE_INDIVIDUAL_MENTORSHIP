@@ -232,7 +232,22 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
 
-        public Task ChangeSub(string id)
+        public Task Subcribe(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IWeatherService.Subcribe(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnSubscribe(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnSubcribe(string name)
         {
             throw new NotImplementedException();
         }
