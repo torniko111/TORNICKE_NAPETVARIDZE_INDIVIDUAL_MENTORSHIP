@@ -309,13 +309,13 @@ namespace BL
         }
         public Task<string> AverageStatistics(string city, string period)
         {
-            string[] periods = period.Split(", ");
+
             string[] cities = city.Split(", ");
 
             var stringbuilder = new StringBuilder();
             for (int i = 0; i < cities.Length; i++)
             {
-                int minusdate = int.Parse(periods[i]);
+                int minusdate = int.Parse(period);
                 var CityByDateFiltered = _weatherRepository.GetAll().Where(x => x.CityName == cities[i] && x.CreatedOn >= (DateTime.Now.AddHours(-minusdate)));
 
                 var CityAverages = CityByDateFiltered.GroupBy(g => g.CityName, s => s.TempC).Select(g => new
@@ -327,9 +327,15 @@ namespace BL
                 {
                     stringbuilder.AppendLine(cities[i] + " no statistics");
                 }
+
+                if (i == 0)
+                {
+                    stringbuilder.AppendLine($"the report generated at {DateTime.Now} for the last {period} hours from");
+                }
+
                 foreach (var item in CityAverages)
                 {
-                    stringbuilder.AppendLine($"Average C for : { cities[i]} before {periods[i]} hours from now is {item.AvgTemperature}");
+                    stringbuilder.AppendLine($"Average C for : {cities[i]} before {period} hours from now is {item.AvgTemperature}");
                 }
             }
 
