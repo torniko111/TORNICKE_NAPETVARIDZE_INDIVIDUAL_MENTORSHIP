@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using DAL.IGenericRepository;
 using DAL.GenericRepository;
 using System.Linq;
+using IsRoleDemo.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BL
 {
@@ -24,14 +26,16 @@ namespace BL
     {
         private readonly IWeatherRepository _weatherRepository;
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _apiKey;
         public static CommentContext comment;
         readonly Stopwatch st = new();
 
-        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration)
+        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
             this._weatherRepository = weatherRepository;
             this._configuration = configuration;
+            this._userManager = userManager;
             this._apiKey = _configuration.GetValue<string>("ApiKey");
         }
 
@@ -44,10 +48,12 @@ namespace BL
         {
             throw new System.NotImplementedException();
         }
+
         public async Task<List<Weather>> Getreport(DateTime from, DateTime to, string city)
         {
             return await _weatherRepository.GetByDateRange(from, to, city);
         }
+
         public Task<Weather> GetByIdAsync(int id)
         {
             throw new System.NotImplementedException();
@@ -118,7 +124,6 @@ namespace BL
                 throw new ArgumentNullException(nameof(city));
             }
 
-            //needs to be moved to appsettings
             HttpClient client = new();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
             double lat;
@@ -238,7 +243,6 @@ namespace BL
 
             };
             _weatherRepository.Add(weather);
-
         }
 
         public async Task GetCurrentWeatherByCitiesSameTime(string[] city)
@@ -293,9 +297,37 @@ namespace BL
 
             return Task.FromResult(stringbuilder.ToString());
         }
-        Task<Weather> IWeatherService.AddAsync(Weather weather)
+
+        public async Task<string> GetAllUsers()
         {
-            throw new NotImplementedException();
+            var result = _userManager.Users.ToList();
+
+            var stringbuilderusers = new StringBuilder();
+
+            foreach (var users in result)
+            {
+                stringbuilderusers.Append(users.UserName+" ");
+                stringbuilderusers.AppendLine(users.NormalizedEmail.ToString());
+            }
+            return await Task.FromResult(stringbuilderusers.ToString());
+        }
+
+        public void Subcribe(string name)
+        {
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == name);
+
+            result.Subcribed = true;
+
+            _userManager.UpdateAsync(result);
+        }
+
+        public void UnSubcribe(string name)
+        {
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == name);
+
+            result.Subcribed = false;
+
+            _userManager.UpdateAsync(result);
         }
     }
 }

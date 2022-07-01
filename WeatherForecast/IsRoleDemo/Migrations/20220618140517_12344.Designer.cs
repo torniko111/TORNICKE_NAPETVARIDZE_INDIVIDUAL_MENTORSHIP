@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IsRoleDemo.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20220618140517_12344")]
     partial class _12344
     {

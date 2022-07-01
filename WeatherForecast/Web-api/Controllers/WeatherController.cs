@@ -4,7 +4,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Threading.Tasks;
 
 namespace Web_api.Controllers
 {
@@ -14,13 +14,12 @@ namespace Web_api.Controllers
     {
         private readonly IWeatherService _weatherService;
 
-
         public WeatherController(IWeatherService userService)
         {
             _weatherService = userService;
         }
 
-        //[Authorize(Roles ="member")]
+        [Authorize(Roles = "member")]
         [HttpGet("getCurrentWeatherByCity")]
         public async Task<double> GetCurrTemp(string city)
         {
@@ -32,7 +31,7 @@ namespace Web_api.Controllers
         {
             return await _weatherService.GetWeatherForecast(city, days);
         }
-
+        [Authorize(Roles ="member")]
         [HttpGet("reportsByDate")]
         public async Task<List<Weather>> Getreports(DateTime from, DateTime to, string city)
         {
@@ -43,6 +42,26 @@ namespace Web_api.Controllers
         public async Task<string> Averagetemperatures(string city, string period)
         {
             return await _weatherService.AverageStatistics(city, period);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("GetAllUsers")]
+        public async Task<string> AllUsers()
+        {
+            return await _weatherService.GetAllUsers();
+        }
+
+        [HttpPut("Subscribe")]
+        public void Subscribe(string name)
+        {
+            _weatherService.Subcribe(name);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut("UnSubscribe")]
+        public void UnSubscribe(string name)
+        {
+            _weatherService.UnSubcribe(name);
         }
 
     }

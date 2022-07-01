@@ -221,5 +221,25 @@ namespace TestingForecast
         {
             throw new NotImplementedException();
         }
+
+        void IWeatherService.AddAsync(Weather user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetAllUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Subcribe(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnSubcribe(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
