@@ -9,6 +9,6 @@ namespace BL.Models
     public class RabitPublishClass
     {
         public string Message { get; set; }
-       //public List<string> MailList { get; set; }
+        public List<string> MailList { get; set; }
     }
 }
