@@ -1,5 +1,6 @@
 using BL;
 using BL.Interfaces;
+using BL.MailService;
 using DAL.data;
 using DAL.IRepositories;
 using DAL.Models;
@@ -16,6 +17,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using MassTransit;
+using BL.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +95,27 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<IConfigurationReader, ConfigurationReader>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddTransient<IWeatherService, WeatherService>();
+builder.Services.AddTransient<IRabbitMqPublisher, RabbitMqPublisher>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<ConsumerRabbitMQ>();
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        var uri = new Uri(builder.Configuration.GetValue<string>("ServiceBus:Uri"));
+        cfg.Host(uri, host =>
+        {
+            host.Username(builder.Configuration.GetValue<string>("ServiceBus:Username"));
+            host.Password(builder.Configuration.GetValue<string>("ServiceBus:Password"));
+        });
+        cfg.ReceiveEndpoint(builder.Configuration.GetValue<string>("ServiceBus:Queue"), c =>
+        {
+            c.ConfigureConsumer<ConsumerRabbitMQ>(ctx);
+        });
+    });
+});
+
 // For Identity  
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()

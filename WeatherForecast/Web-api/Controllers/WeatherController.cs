@@ -1,4 +1,7 @@
-﻿using BL.Interfaces;
+﻿using BL;
+using BL.Interfaces;
+using BL.MailService;
+using BL.Models;
 using DAL.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +16,14 @@ namespace Web_api.Controllers
     public class WeatherController : ControllerBase
     {
         private readonly IWeatherService _weatherService;
+        private readonly IEmailService _emailService;
+        private readonly IRabbitMqPublisher _rabbitMqPublisher;
 
-        public WeatherController(IWeatherService userService)
+        public WeatherController(IWeatherService userService, IEmailService emailService, IRabbitMqPublisher rabbitMqPublisher)
         {
             _weatherService = userService;
+            _emailService = emailService;
+            _rabbitMqPublisher = rabbitMqPublisher;
         }
 
         [Authorize(Roles = "member")]
@@ -64,5 +71,18 @@ namespace Web_api.Controllers
             _weatherService.UnSubcribe(name);
         }
 
+        [HttpPost]
+        public IActionResult SendEmail(EmailDto request)
+        {
+            _emailService.SendEmail(request);
+            return Ok();
+        }
+
+        [HttpPost("rabbitMQ")]
+        public async Task<IActionResult> SendMessageToRabbitMQ (RabitPublishClass rabitPublishClass)
+        {
+            await _rabbitMqPublisher.SendMessage(rabitPublishClass);
+            return  Ok();
+        }
     }
 }

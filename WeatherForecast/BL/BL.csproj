@@ -8,6 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageReference Include="Hangfire.Core" Version="1.7.30" />
+    <PackageReference Include="MailKit" Version="3.3.0" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.4-develop.503" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
