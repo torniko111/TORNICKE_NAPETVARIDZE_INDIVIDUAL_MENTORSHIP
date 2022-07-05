@@ -9,6 +9,8 @@ namespace BL
 {
     public interface IRabbitMqPublisher
     {
-        public Task SendMessage(RabitPublishClass rabitPublishClass);
+        void SendMessage();
+        List<string> GetAllUsersEmails();
+        string AverageStatistics(string city, string period);
     }
 }

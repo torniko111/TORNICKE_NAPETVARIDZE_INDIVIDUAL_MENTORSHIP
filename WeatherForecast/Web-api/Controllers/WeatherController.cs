@@ -38,7 +38,7 @@ namespace Web_api.Controllers
         {
             return await _weatherService.GetWeatherForecast(city, days);
         }
-        [Authorize(Roles ="member")]
+        [Authorize(Roles = "member")]
         [HttpGet("reportsByDate")]
         public async Task<List<Weather>> Getreports(DateTime from, DateTime to, string city)
         {
@@ -53,9 +53,9 @@ namespace Web_api.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpGet("GetAllUsers")]
-        public async Task<string> AllUsers()
+        public List<string> AllUsers()
         {
-            return await _weatherService.GetAllUsers();
+            return _rabbitMqPublisher.GetAllUsersEmails();
         }
 
         [HttpPut("Subscribe")]
@@ -79,10 +79,10 @@ namespace Web_api.Controllers
         }
 
         [HttpPost("rabbitMQ")]
-        public async Task<IActionResult> SendMessageToRabbitMQ (RabitPublishClass rabitPublishClass)
+        public IActionResult SendMessageToRabbitMQ()
         {
-            await _rabbitMqPublisher.SendMessage(rabitPublishClass);
-            return  Ok();
+            _rabbitMqPublisher.SendMessage();
+            return Ok();
         }
     }
 }

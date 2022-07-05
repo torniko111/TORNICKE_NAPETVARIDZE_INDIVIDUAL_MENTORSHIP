@@ -11,15 +11,12 @@ namespace BL
 {
     public class ConsumerRabbitMQ : IConsumer<RabitPublishClass>
     {
-        private readonly EmailDto emailDto;
         private readonly IEmailService emailService;
 
-        public ConsumerRabbitMQ(EmailDto emailDto, IEmailService emailService)
+        public ConsumerRabbitMQ(IEmailService emailService)
         {
-            this.emailDto = emailDto;
             this.emailService = emailService;
         }
-
 
 
         public async Task Consume(ConsumeContext<RabitPublishClass> context)
@@ -27,15 +24,14 @@ namespace BL
             var msg = context.Message.Message;
             var maillist = context.Message.MailList;
 
-            emailDto.Body = "meore cda";
-            emailDto.To = "tornike.nafetvaridze@gmail.com";
-            emailDto.Subject = "first try thought rabbitMQ";
+            //emailDto.Body = msg;
+            //emailDto.To = "tornike.nafetvaridze@gmail.com";
+            //emailDto.Subject = "Report Statistics";
 
-            emailService.SendEmail(emailDto);
-            await Console.Out.WriteAsync(msg);
             foreach (var item in maillist)
             {
-                Console.WriteLine(item);
+                EmailDto emaildto = new EmailDto() { Body = msg, To = item, Subject = "Report for Average Statistics" };
+                emailService.SendEmail(emaildto);
             }
         }
     }

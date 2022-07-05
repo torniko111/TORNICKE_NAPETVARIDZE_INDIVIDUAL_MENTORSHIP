@@ -23,6 +23,7 @@ using BL.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
+var mailSendingInerval = builder.Configuration.GetValue<string>("MailSendingInterval");
 
 
 builder.Host.UseSerilog((ctx, lc) => lc
@@ -149,7 +150,7 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSender", x => x.SendMessage(new RabitPublishClass { Message = "qalaqshi cxela", MailList = new List<string> { "erti", "ori", "sami" } }), " * * * * * ");
+RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSender", x => x.SendMessage(), $" * * * * * ");
 
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => AllReccuringJobsDeleter());
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => CallWeather(builder.Configuration.GetValue<string>("WeatherSettings:Cities"), builder.Configuration.GetValue<string>("WeatherSettings:Cron")));

@@ -269,15 +269,15 @@ namespace BL
             }
             await _weatherRepository.AddRange(weathers);
         }
+
         public Task<string> AverageStatistics(string city, string period)
         {
-            string[] periods = period.Split(", ");
             string[] cities = city.Split(", ");
 
             var stringbuilder = new StringBuilder();
             for (int i = 0; i < cities.Length; i++)
             {
-                int minusdate = int.Parse(periods[i]);
+                int minusdate = int.Parse(period);
                 var CityByDateFiltered = _weatherRepository.GetAll().Where(x => x.CityName == cities[i] && x.CreatedOn >= (DateTime.Now.AddHours(-minusdate)));
 
                 var CityAverages = CityByDateFiltered.GroupBy(g => g.CityName, s => s.TempC).Select(g => new
@@ -291,25 +291,11 @@ namespace BL
                 }
                 foreach (var item in CityAverages)
                 {
-                    stringbuilder.AppendLine($"Average C for : { cities[i]} before {periods[i]} hours from now is {item.AvgTemperature}");
+                    stringbuilder.AppendLine($"Average C for : { cities[i]} before {period} hours from now is {item.AvgTemperature}");
                 }
             }
 
             return Task.FromResult(stringbuilder.ToString());
-        }
-
-        public async Task<string> GetAllUsers()
-        {
-            var result = _userManager.Users.ToList();
-
-            var stringbuilderusers = new StringBuilder();
-
-            foreach (var users in result)
-            {
-                stringbuilderusers.Append(users.UserName+" ");
-                stringbuilderusers.AppendLine(users.NormalizedEmail.ToString());
-            }
-            return await Task.FromResult(stringbuilderusers.ToString());
         }
 
         public void Subcribe(string name)
