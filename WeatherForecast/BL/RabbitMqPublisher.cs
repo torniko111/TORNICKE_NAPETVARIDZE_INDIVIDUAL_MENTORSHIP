@@ -62,7 +62,6 @@ namespace BL
             return stringbuilder.ToString();
         }
 
-
         public void SendMessage()
         {
             string Cities = _config.GetSection("Cities").Value;
