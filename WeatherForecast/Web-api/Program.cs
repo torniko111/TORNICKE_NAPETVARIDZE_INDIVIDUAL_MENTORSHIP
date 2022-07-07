@@ -25,14 +25,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
 var mailSendingInerval = builder.Configuration.GetValue<string>("MailSendingInterval");
 
-
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .WriteTo.File(builder.Configuration.GetValue<string>("WeatherSettings:LogPath"), rollingInterval: RollingInterval.Minute, outputTemplate:
         "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"));
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -107,6 +105,8 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((ctx, cfg) =>
     {
         var uri = new Uri(builder.Configuration.GetValue<string>("ServiceBus:Uri"));
+        cfg.UseDelayedRedelivery(r => r.Intervals(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(30)));
+        cfg.UseMessageRetry(r => r.Immediate(5));
         cfg.Host(uri, host =>
         {
             host.Username(builder.Configuration.GetValue<string>("ServiceBus:Username"));
@@ -150,9 +150,10 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSender", x => x.SendMessage(), $" * * * * * ");
+MailSenderReccuringJob();
 
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => AllReccuringJobsDeleter());
+app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => MailSenderReccuringJob());
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => CallWeather(builder.Configuration.GetValue<string>("WeatherSettings:Cities"), builder.Configuration.GetValue<string>("WeatherSettings:Cron")));
 static void CallWeather(string city, string Cron)
 {
@@ -196,3 +197,8 @@ static void AllReccuringJobsDeleter()
     }
 }
 app.Run();
+
+static void MailSenderReccuringJob()
+{
+    RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSender", x => x.SendMessage(), $" * * * * * ");
+}
