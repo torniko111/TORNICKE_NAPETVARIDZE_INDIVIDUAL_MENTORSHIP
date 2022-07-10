@@ -10,6 +10,7 @@ namespace BL
     public interface IRabbitMqPublisher
     {
         void SendMessage();
+        void SendMessageDirectly();
         List<string> GetAllUsersEmails();
         string AverageStatistics(string city, string period);
     }

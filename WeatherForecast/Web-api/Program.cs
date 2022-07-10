@@ -19,6 +19,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using MassTransit;
 using BL.Models;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,12 +73,6 @@ builder.Services.AddSwaggerGen(c =>
             }
         });
 });
-//builder.Services.AddAuthentication("Bearer")
-//    .AddIdentityServerAuthentication("Bearer", options =>
-//    {
-//        options.ApiName = "myApi";
-//        options.Authority = "https://localhost:5001";
-//    });
 
 builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
     .AddIdentityServerAuthentication(options =>
@@ -150,10 +145,8 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
 
-MailSenderReccuringJob();
-
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => AllReccuringJobsDeleter());
-app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => MailSenderReccuringJob());
+app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => LocalOrRabbitMq(builder.Configuration.GetValue<string>("WeatherSettings:Flag")));
 app.Services.GetRequiredService<IOptionsMonitor<WeatherSettings>>().OnChange(config => CallWeather(builder.Configuration.GetValue<string>("WeatherSettings:Cities"), builder.Configuration.GetValue<string>("WeatherSettings:Cron")));
 static void CallWeather(string city, string Cron)
 {
@@ -188,6 +181,8 @@ static void CallWeather(string city, string Cron)
     }
 }
 
+app.Run();
+
 static void AllReccuringJobsDeleter()
 {
     using var connection = JobStorage.Current.GetConnection();
@@ -196,9 +191,25 @@ static void AllReccuringJobsDeleter()
         RecurringJob.RemoveIfExists(recurringJob.Id);
     }
 }
-app.Run();
+
+static void MailSenderReccuringJobRabbitMQ()
+{
+    RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSenderTrhoughtRabbitMQ", x => x.SendMessage(), $" * * * * * ");
+}
 
 static void MailSenderReccuringJob()
 {
-    RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSender", x => x.SendMessage(), $" * * * * * ");
+    RecurringJob.AddOrUpdate<RabbitMqPublisher>($"MailSenderDirectly", x => x.SendMessageDirectly(), $" * * * * * ");
+}
+
+static void LocalOrRabbitMq(string Flag)
+{
+    if (Flag == "Locally")
+    {
+        MailSenderReccuringJob();
+    }
+    else
+    {
+        MailSenderReccuringJobRabbitMQ();
+    }
 }

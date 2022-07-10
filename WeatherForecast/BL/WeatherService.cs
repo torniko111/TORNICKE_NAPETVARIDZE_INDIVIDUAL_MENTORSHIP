@@ -28,15 +28,17 @@ namespace BL
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _apiKey;
+        private readonly int _CancelAfter;
         public static CommentContext comment;
         readonly Stopwatch st = new();
 
         public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
-            this._weatherRepository = weatherRepository;
-            this._configuration = configuration;
-            this._userManager = userManager;
-            this._apiKey = _configuration.GetValue<string>("ApiKey");
+            _weatherRepository = weatherRepository;
+            _configuration = configuration;
+            _userManager = userManager;
+            _apiKey = _configuration.GetValue<string>("ApiKey");
+            _CancelAfter = int.Parse(_configuration.GetValue<string>("CancelAfter"));
         }
 
         public void AddAsync(Weather weather)
@@ -51,6 +53,10 @@ namespace BL
 
         public async Task<List<Weather>> Getreport(DateTime from, DateTime to, string city)
         {
+            if(from >= to)
+            {
+                throw new ArgumentException("from must be lower than to");
+            }
             return await _weatherRepository.GetByDateRange(from, to, city);
         }
 
@@ -186,7 +192,7 @@ namespace BL
             foreach (var city in cities)
             {
                 var clt = new CancellationTokenSource();
-                clt.CancelAfter(700);
+                clt.CancelAfter(_CancelAfter);
                 var task = Task.Run(async () =>
                 {
                     if (!clt.Token.IsCancellationRequested)

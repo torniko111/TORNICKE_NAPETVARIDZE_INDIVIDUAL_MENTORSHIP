@@ -10,12 +10,39 @@ using BL.Interfaces;
 using DAL.Models;
 using System.Collections.Generic;
 using BL.CommentStrategy;
+using System.Linq;
 
 namespace TestingForecast
 {
     [TestClass]
     public class WeatherApiUnitTests : IWeatherService
     {
+        private readonly List<Weather> WeatherObjects = new()
+        {
+            new Weather() { Id = 1, TempC =20, CityName = "london", CreatedOn =DateTime.Now},
+            new Weather() { Id = 1, TempC =21, CityName = "tbilisi", CreatedOn =DateTime.Now},
+            new Weather() { Id = 1, TempC =22, CityName = "rustavi", CreatedOn =DateTime.Now},
+            new Weather() { Id = 1, TempC =23, CityName = "london", CreatedOn =DateTime.Now}
+        };
+        private readonly Dictionary<string, double> _weather = new()
+        {
+            {"london", -1 },
+            {"tbilisi", 20 },
+            {"tashkent", 30},
+            {"warshava", 40 },
+        };
+
+        Task<List<Weather>> WeatherObjectsAsync(DateTime from, DateTime to, string city)
+        {
+            return Task.Run(() =>
+            WeatherObjects.Where(x => x.CreatedOn > from && x.CreatedOn < to && x.CityName == city).ToList());
+        }
+
+        Task<double> Double(string city)
+        {
+            return Task.Run(() =>
+            _weather[city]);
+        }
 
         public Task<Weather> AddAsync(Weather user)
         {
@@ -31,27 +58,10 @@ namespace TestingForecast
         {
             throw new NotImplementedException();
         }
-        
-        public async Task<double> AddWeather(string city)
+
+        public Task<double> AddWeather(string city)
         {
-
-            if (string.IsNullOrWhiteSpace(city) || city.Length == 1)
-            {
-                throw new ArgumentNullException(nameof(city));
-            }
-
-            //needs to be moved to appsettings
-            string apikey = "1e2f66e8ba55167f95b01dd4c7364021";
-            HttpClient client = new();
-            client.BaseAddress = new Uri("https://api.openweathermap.org");
-
-            var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid={apikey}");
-            var stringResult = await response.Content.ReadAsStringAsync();
-
-            var obj = JsonConvert.DeserializeObject<dynamic>(stringResult);
-
-            var tmpdegreesc = Math.Round(((float)obj.main.temp - 272.15), 2);
-
+            double tmpdegreesc = Double(city).Result;
 
             switch (tmpdegreesc)
             {
@@ -71,8 +81,7 @@ namespace TestingForecast
                     break;
             }
 
-
-            return tmpdegreesc;
+            return Double(city);
         }
 
         public Task<Dictionary<double, string>> GetWeatherForecast(string city, int days)
@@ -86,14 +95,6 @@ namespace TestingForecast
         }
 
         [TestMethod]
-        public void GetWeatherApi_ApiCall_ResponseDouble()
-        {
-            double C = AddWeather("tbilisi").Result;
-
-            Assert.IsTrue(C != -10000);
-        }
-
-        [TestMethod]
         public void GetComment_CurrentTemperature_CommentForLondon()
         {
             //Arrange
@@ -102,33 +103,9 @@ namespace TestingForecast
             //Act
             bool result = false;
 
-            if (C < 0)
+            if (WeatherService.comment.GetComment() == "Dress warmly")
             {
-                if (WeatherService.comment.GetComment() == "Dress warmly")
-                {
-                    result = true;
-                }
-            }
-            else if (C < 21)
-            {
-                if (WeatherService.comment.GetComment() == "its fresh")
-                {
-                    result = true;
-                }
-            }
-            else if (C < 31)
-            {
-                if (WeatherService.comment.GetComment() == "Good weather")
-                {
-                    result = true;
-                }
-            }
-            else
-            {
-                if (WeatherService.comment.GetComment() == "it's time to go to the beach")
-                {
-                    result = true;
-                }
+                result = true;
             }
 
             //Assert
@@ -144,37 +121,75 @@ namespace TestingForecast
             //Act
             bool result = false;
 
-            if (C < 0)
+            if (WeatherService.comment.GetComment() == "It's fresh")
             {
-                if (WeatherService.comment.GetComment() == "Dress warmly")
-                {
-                    result = true;
-                }
-            }
-            else if (C < 21)
-            {
-                if (WeatherService.comment.GetComment() == "its fresh")
-                {
-                    result = true;
-                }
-            }
-            else if (C < 31)
-            {
-                if (WeatherService.comment.GetComment() == "Good weather")
-                {
-                    result = true;
-                }
-            }
-            else  
-            {
-                if (WeatherService.comment.GetComment() == "it's time to go to the beach")
-                {
-                    result = true;
-                }
+                result = true;
             }
 
             //Assert
             Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void GetComment_CurrentTemperature_CommentForTashkent()
+        {
+            //Arrange
+            double C = AddWeather("tashkent").Result;
+
+            //Act
+            bool result = false;
+
+            if (WeatherService.comment.GetComment() == "Good weather")
+            {
+                result = true;
+            }
+
+            //Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void GetComment_CurrentTemperature_CommentForWarshava()
+        {
+            //Arrange
+            double C = AddWeather("warshava").Result;
+
+            //Act
+            bool result = false;
+
+            if (WeatherService.comment.GetComment() == "it's time to go to the beach")
+            {
+                result = true;
+            }
+
+            //Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void GetReports_InputLondon_Count2()
+        {
+            //Arrange
+            var returnedLondonObjects = Getreport(DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1), "london");
+
+            //Act
+            int count = returnedLondonObjects.Result.Count;
+
+            //Assert
+            Assert.AreEqual(count, 2);
+        }
+
+        [TestMethod]
+        public void GetReports_InputTbilisi_Count1()
+        {
+            //Arrange
+            var returnedLondonObjects = Getreport(DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1), "tbilisi");
+
+            //Act
+            int count = returnedLondonObjects.Result.Count;
+
+            //Assert
+            Assert.AreEqual(count, 1);
         }
 
         public Task UpdateAsync(Weather user)
@@ -207,9 +222,10 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
 
-        public Task<List<Weather>> Getreport(DateTime from, DateTime to, string city)
+        public async Task<List<Weather>> Getreport(DateTime from, DateTime to, string city)
         {
-            throw new NotImplementedException();
+            var result = await WeatherObjectsAsync(from, to, city);
+            return result;
         }
 
         public Task<string> AverageStatistics(string[] city, string[] period)
