@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Web_api</RootNamespace>
     <UserSecretsId>cc6f11b3-82cf-4e0d-b648-492a4cb9f177</UserSecretsId>
+	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
 	<connectionStrings>
         <add name="RabbitMqConnection" connectionString="amqp://demouser:demo123@localhost:5672/DemoApp" />
