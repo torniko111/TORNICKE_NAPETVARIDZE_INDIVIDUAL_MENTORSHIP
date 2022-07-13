@@ -41,11 +41,6 @@ namespace BL
             _CancelAfter = int.Parse(_configuration.GetValue<string>("CancelAfter"));
         }
 
-        public void AddAsync(Weather weather)
-        {
-            _weatherRepository.Add(weather);
-        }
-
         public Task DeleteAsync(Weather weather)
         {
             throw new System.NotImplementedException();
@@ -276,7 +271,7 @@ namespace BL
             await _weatherRepository.AddRange(weathers);
         }
 
-        public Task<string> AverageStatistics(string city, string period)
+        public async Task<string> AverageStatistics(string city, string period)
         {
             string[] cities = city.Split(", ");
 
@@ -301,7 +296,7 @@ namespace BL
                 }
             }
 
-            return Task.FromResult(stringbuilder.ToString());
+            return await Task.FromResult(stringbuilder.ToString());
         }
 
         public void Subcribe(string name)

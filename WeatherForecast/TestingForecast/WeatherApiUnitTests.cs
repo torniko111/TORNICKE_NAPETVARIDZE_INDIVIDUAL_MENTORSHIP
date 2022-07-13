@@ -238,11 +238,6 @@ namespace TestingForecast
             throw new NotImplementedException();
         }
 
-        void IWeatherService.AddAsync(Weather user)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<string> GetAllUsers()
         {
             throw new NotImplementedException();

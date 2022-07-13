@@ -10,7 +10,6 @@ namespace BL.Interfaces
 {
     public interface IWeatherService
     {
-        void AddAsync(Weather user);
         Task DeleteAsync(Weather user);
         Task<List<Weather>> ListAsync();
         Task<Weather> GetByIdAsync(int id);
