@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingForecast", "TestingForecast\TestingForecast.csproj", "{25E3FEC5-062A-4C6A-A35D-14DD283A38F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "TestingForecast\UnitTests.csproj", "{25E3FEC5-062A-4C6A-A35D-14DD283A38F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C42C727A-D305-4B76-BCA7-242463F88BF1}"
 	ProjectSection(SolutionItems) = preProject

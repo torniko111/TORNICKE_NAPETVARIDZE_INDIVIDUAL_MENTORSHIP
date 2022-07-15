@@ -10,5 +10,6 @@ namespace DAL.Models
         public string Cron { get; set; }
         public string LogPath { get; set; }
         public string ApiKey { get; set; }
+        public string Flag { get; set; }
     }
 }

@@ -53,7 +53,6 @@ namespace Is4RoleDemo.Services
                     }
                 }
             }
-
             context.IssuedClaims = claims;
         }
 

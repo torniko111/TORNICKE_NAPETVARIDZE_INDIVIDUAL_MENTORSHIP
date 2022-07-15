@@ -42,9 +42,9 @@ namespace DAL.GenericRepository
             context.Set<T>().RemoveRange(entities);
         }
 
-        IEnumerable<T> IGenericRepository<T>.GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //IEnumerable<T> IGenericRepository<T>.GetAll()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

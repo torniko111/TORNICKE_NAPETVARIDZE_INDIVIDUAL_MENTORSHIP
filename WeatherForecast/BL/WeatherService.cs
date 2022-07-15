@@ -16,6 +16,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using DAL.IGenericRepository;
 using DAL.GenericRepository;
+using System.Linq;
+using IsRoleDemo.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BL
 {
@@ -23,30 +26,35 @@ namespace BL
     {
         private readonly IWeatherRepository _weatherRepository;
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _apiKey;
+        private readonly int _CancelAfter;
         public static CommentContext comment;
         readonly Stopwatch st = new();
 
-        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration)
+        public WeatherService(IWeatherRepository weatherRepository, IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
-            this._weatherRepository = weatherRepository;
-            this._configuration = configuration;
-            this._apiKey = _configuration.GetValue<string>("ApiKey");
-        }
-
-        public void AddAsync(Weather weather)
-        {
-             _weatherRepository.Add(weather);
+            _weatherRepository = weatherRepository;
+            _configuration = configuration;
+            _userManager = userManager;
+            _apiKey = _configuration.GetValue<string>("ApiKey");
+            _CancelAfter = int.Parse(_configuration.GetValue<string>("CancelAfter"));
         }
 
         public Task DeleteAsync(Weather weather)
         {
             throw new System.NotImplementedException();
         }
+
         public async Task<List<Weather>> Getreport(DateTime from, DateTime to, string city)
         {
+            if(from >= to)
+            {
+                throw new ArgumentException("from must be lower than to");
+            }
             return await _weatherRepository.GetByDateRange(from, to, city);
         }
+
         public Task<Weather> GetByIdAsync(int id)
         {
             throw new System.NotImplementedException();
@@ -117,7 +125,6 @@ namespace BL
                 throw new ArgumentNullException(nameof(city));
             }
 
-            //needs to be moved to appsettings
             HttpClient client = new();
             client.BaseAddress = new Uri("https://api.openweathermap.org");
             double lat;
@@ -180,7 +187,7 @@ namespace BL
             foreach (var city in cities)
             {
                 var clt = new CancellationTokenSource();
-                clt.CancelAfter(200);
+                clt.CancelAfter(_CancelAfter);
                 var task = Task.Run(async () =>
                 {
                     if (!clt.Token.IsCancellationRequested)
@@ -237,7 +244,6 @@ namespace BL
 
             };
             _weatherRepository.Add(weather);
-
         }
 
         public async Task GetCurrentWeatherByCitiesSameTime(string[] city)
@@ -265,9 +271,50 @@ namespace BL
             await _weatherRepository.AddRange(weathers);
         }
 
-        Task<Weather> IWeatherService.AddAsync(Weather weather)
+        public async Task<string> AverageStatistics(string city, string period)
         {
-            throw new NotImplementedException();
+            string[] cities = city.Split(", ");
+
+            var stringbuilder = new StringBuilder();
+            for (int i = 0; i < cities.Length; i++)
+            {
+                int minusdate = int.Parse(period);
+                var CityByDateFiltered = _weatherRepository.GetAll().Where(x => x.CityName == cities[i] && x.CreatedOn >= (DateTime.Now.AddHours(-minusdate)));
+
+                var CityAverages = CityByDateFiltered.GroupBy(g => g.CityName, s => s.TempC).Select(g => new
+                {
+                    City = g.Key,
+                    AvgTemperature = Math.Round(g.Average(),2)
+                });
+                if (!CityAverages.Any())
+                {
+                    stringbuilder.AppendLine(cities[i] + " no statistics");
+                }
+                foreach (var item in CityAverages)
+                {
+                    stringbuilder.AppendLine($"Average C for : { cities[i]} before {period} hours from now is {item.AvgTemperature}");
+                }
+            }
+
+            return await Task.FromResult(stringbuilder.ToString());
+        }
+
+        public void Subcribe(string name)
+        {
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == name);
+
+            result.Subcribed = true;
+
+            _userManager.UpdateAsync(result);
+        }
+
+        public void UnSubcribe(string name)
+        {
+            var result = _userManager.Users.SingleOrDefault(u => u.UserName == name);
+
+            result.Subcribed = false;
+
+            _userManager.UpdateAsync(result);
         }
     }
 }

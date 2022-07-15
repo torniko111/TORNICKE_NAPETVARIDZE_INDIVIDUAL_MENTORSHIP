@@ -3,6 +3,7 @@
 
 
 using IdentityServer4;
+using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Services;
 using Is4RoleDemo;
 using Is4RoleDemo.Services;
@@ -33,11 +34,11 @@ namespace IsRoleDemo
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IProfileService, ProfileService>();
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
             var builder = services.AddIdentityServer(options =>
